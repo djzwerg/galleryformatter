@@ -1,0 +1,10 @@
+; $Id$
+
+name = Gallery Formatter
+description = Provides a jquery gallery CCK formatter for imagefield
+dependencies[] = content
+dependencies[] = imagefield
+dependencies[] = imagecache
+
+core = 6.x
+package = User interface
