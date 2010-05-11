@@ -48,6 +48,12 @@ function template_preprocess_galleryformatter_formatter_galleryformatter_default
       if (module_exists('colorbox')) {
         $link_attributes['class'] .= ' colorbox';
       }
+      if (module_exists('thickbox')) {
+        $link_attributes['class'] .= ' thickbox';
+      }
+      if (module_exists('shadowbox')) {
+        $link_attributes['rel'] = 'shadowbox';
+      }
       $slides[$id]['link_to_original'] = l(t('View original'), $filepath, array('attributes' => $link_attributes));
 
       // setup thumbnail images
