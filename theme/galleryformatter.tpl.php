@@ -9,6 +9,7 @@
  * Only edit this file for switching order of the slides info, adding classes or other minor changes within the overall html structure.
  * KEEP the original html structure or you'll run into problems with the JS.
  * IDs on the slides and the hash for the thumb links MUST be there for the gallery to function.
+ * width and height must be set inline for gallery-slides container, the gallery-thumbs, and the li's inside it.
  *
  * Available variables:
  *
@@ -22,7 +23,7 @@
 ?>
 <?php if (count($gallery_slides) > 1): ?>
 <div class="galleryformatter galleryview <?php print $gallery_style ?>">
-  <div class="gallery-slides" style="width: <?php print $gallery_slide_width; ?>px;">
+  <div class="gallery-slides" style="width: <?php print $gallery_slide_width; ?>px; height: <?php print $gallery_slide_height; ?>px;">
     <div class="gallery-frame">
       <ul>
       <?php foreach ($gallery_slides as $id => $data): ?>
@@ -42,7 +43,7 @@
       </ul>
     </div>
   </div>
-  <div  class="gallery-thumbs">
+  <div class="gallery-thumbs" style="width: <?php print $gallery_slide_width; ?>px;">
     <div class="wrapper">
       <ul>
         <?php foreach ($gallery_thumbs as $id => $image): ?>

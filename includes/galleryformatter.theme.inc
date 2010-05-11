@@ -86,15 +86,14 @@ function template_preprocess_galleryformatter_formatter_galleryformatter_default
     $modulepath = drupal_get_path('module', 'galleryformatter');
     /**
      * @todo:
-     * give our js some settings maybe
+     * Give our js some settings maybe
      * Give users some options on click vs. hover?
      */
+/*
     $settings = array();
-    $settings['galleryformatter']['slidewidth'] = $slide_image['width'];
-    $settings['galleryformatter']['slideheight'] = $slide_image['height'];
-    $settings['galleryformatter']['thumbwidth'] = $thumb_image['width'];
-    $settings['galleryformatter']['thumbheight'] = $thumb_image['height'];
+    $settings['galleryformatter']['settingname'] = 'settingvalue';
     drupal_add_js($settings, 'setting');
+*/
     drupal_add_js($modulepath .'/theme/infiniteCarousel.js');
     drupal_add_js($modulepath .'/theme/galleryformatter.js');
     galleryformatter_add_css($style);

@@ -15,35 +15,21 @@ Drupal.galleryformatter.prepare = function(el) {
   $el = $(el);
   var $slides = $('li.gallery-slide', $el);
   var $slideContainer = $('div.gallery-slides', $el);
-  $single = $slideContainer.filter(':first');
-  var slideHeight = Drupal.settings.galleryformatter.slideheight + 'px';
-  var slideWidth =  Drupal.settings.galleryformatter.slidewidth + 'px';
-  //var slideHeight = $single.outerHeight() + 'px';
-  //var slideWidth = $single.outerWidth() + 'px';
-  $thumbs = $('.gallery-thumbs', $el);
-  var thumbHeight = $thumbs.filter(':first').outerHeight() + 'px';
-  // give our thumbs wrapper a fixed width equal to the slide
-  $thumbs.css({ width: slideWidth, });
+
+  var $thumbs = $('.gallery-thumbs', $el);
+  var $thumbsLi = $('li', $thumbs);
+  var thumbWidth = $thumbsLi.filter(':first').width() + 'px';
+
   $thumbs.infiniteCarousel();
-  $el = $(el);
-  $thumbs = $('.gallery-thumbs', $el);
-  var $thumbsLi = $('li', $thumbs).each(function(){
+
+  $thumbsLi = $('li', $thumbs); // we need to reselect because infiniteCarousel inserts new empty li elements if necessary
+
+  $thumbsLi.each(function(){
     $(this).css({
-        height: Drupal.settings.galleryformatter.thumbheight + 'px',
-        width: Drupal.settings.galleryformatter.thumbwidth + 'px',
+        width: thumbWidth,
       });
   });
-  var $thumbslinks = $('.gallery-thumbs li a', $thumbs);
-  var $thumbslinks = $('.gallery-thumbs li a');
-
-
-
-  // give our slide containers a fixed height
-   $('div.gallery-frame', $el).each(function(){
-    $(this).css("height", slideHeight);
-  });
-
-
+  var $thumbslinks = $('a', $thumbsLi);
 
   /*
    * @TODO:
