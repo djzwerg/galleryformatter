@@ -39,10 +39,16 @@ function template_preprocess_galleryformatter_formatter_galleryformatter_default
       $slides[$id]['title'] = $title;
       $slides[$id]['description'] = $description ;
       $slides[$id]['filepath'] = $filepath;
-      $slides[$id]['link_to_original'] = l(t('View original'), $filepath, array('attributes' => array(
-        'class' => 'view-full',
+
+      // prepare link to the original file
+      $link_attributes = array(
         'title' => $title,
-      )));
+        'class' => 'view-full',
+      );
+      if (module_exists('colorbox')) {
+        $link_attributes['class'] .= ' colorbox';
+      }
+      $slides[$id]['link_to_original'] = l(t('View original'), $filepath, array('attributes' => $link_attributes));
 
       // setup thumbnail images
       $thumbs[$id] = theme('imagecache', $thumb_preset, $filepath, $filename, $title, $img_attributes);
