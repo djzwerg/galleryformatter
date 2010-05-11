@@ -16,8 +16,8 @@ Drupal.galleryformatter.prepare = function(el) {
   var $slides = $('li.gallery-slide', $el);
   var $slideContainer = $('div.gallery-slides', $el);
   $single = $slideContainer.filter(':first');
-  var slideHeight = Drupal.settings.galleryformatter.slideheight[0] + 'px';
-  var slideWidth =  Drupal.settings.galleryformatter.slidewidth[0] + 'px';
+  var slideHeight = Drupal.settings.galleryformatter.slideheight + 'px';
+  var slideWidth =  Drupal.settings.galleryformatter.slidewidth + 'px';
   //var slideHeight = $single.outerHeight() + 'px';
   //var slideWidth = $single.outerWidth() + 'px';
   $thumbs = $('.gallery-thumbs', $el);
@@ -29,8 +29,8 @@ Drupal.galleryformatter.prepare = function(el) {
   $thumbs = $('.gallery-thumbs', $el);
   var $thumbsLi = $('li', $thumbs).each(function(){
     $(this).css({
-        height: Drupal.settings.galleryformatter.thumbheight[0] + 'px',
-        width: Drupal.settings.galleryformatter.thumbwidth[0] + 'px',
+        height: Drupal.settings.galleryformatter.thumbheight + 'px',
+        width: Drupal.settings.galleryformatter.thumbwidth + 'px',
       });
   });
   var $thumbslinks = $('.gallery-thumbs li a', $thumbs);
