@@ -31,11 +31,14 @@ Drupal.galleryformatter.prepare = function(el) {
   });
   var $thumbslinks = $('a', $thumbsLi);
 
+  // hide all slides, then show the first one
+  $slides.hide();
+  $slides.filter(':first').show();
+
   /*
    * @TODO:
    * figure out how to get this into proper functions reusing selections
    */
-  $slides.hide();
   $thumbslinks.click(function(e){
     $hash = $(this.hash);
     if(!$hash.is(':visible')){
@@ -43,7 +46,12 @@ Drupal.galleryformatter.prepare = function(el) {
       $(this).parent().addClass('active');
       $slides.filter(':visible').fadeOut('slow');
       $hash.fadeIn('slow');
-      window.location.hash = this.hash;  // not sure if this is the best way to do it.
+      /*
+       * @FIXME
+       * Need to figure out a way to update the location bar of the browser, for bookmarking etc, without making the scroll jump
+       * window.location.hash = this.hash; solution below does update the location, but makes the scroll jump.
+       */
+      // window.location.hash = this.hash;  // not sure if this is the best way to do it.
     }
     e.preventDefault();
   });
@@ -51,8 +59,5 @@ Drupal.galleryformatter.prepare = function(el) {
   var $locationHash = window.location.hash;
   if ($locationHash) {
    $thumbslinks.filter("[href="+$locationHash+"]").click();  // trigger click event if going directly to the url of one of the tabs
-  }
-  else {
-   $('li.slide-0 a', $thumbs).click();  // trigger click event for our first item if url has no hash
   }
 }

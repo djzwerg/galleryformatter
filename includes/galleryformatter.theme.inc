@@ -18,6 +18,7 @@ function template_preprocess_galleryformatter_formatter_galleryformatter_default
 
   // ONLY do something if both of these presets are set for this field
   if (isset($thumb_preset) && ($thumb_preset !== '0') && isset($slide_preset) && ($slide_preset !== '0')) {
+    $vars['fieldname'] = $vars['element']['#field_name'];
     $children = element_children($vars['element']);
     foreach ($children as $key) {
       $items[] = $vars['element'][$key]['#item'];

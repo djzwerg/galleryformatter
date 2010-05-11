@@ -27,7 +27,7 @@
     <div class="gallery-frame">
       <ul>
       <?php foreach ($gallery_slides as $id => $data): ?>
-        <li class="gallery-slide" id="slide-<?php print $id; ?>">
+        <li class="gallery-slide" id="slide-<?php print $id .'-'. $fieldname; ?>">
           <?php print $data['link_to_original']; ?>
           <?php print $data['image']; ?>
           <?php if ($data['title'] || $data['description']): ?>
@@ -47,7 +47,7 @@
     <div class="wrapper">
       <ul>
         <?php foreach ($gallery_thumbs as $id => $image): ?>
-          <li class="slide-<?php print $id; ?>" style="width: <?php print $gallery_thumb_width; ?>px;"><a href="#slide-<?php print $id; ?>"><?php print $image; ?></a></li>
+          <li class="slide-<?php print $id; ?>" style="width: <?php print $gallery_thumb_width; ?>px;"><a href="#slide-<?php print $id .'-'. $fieldname; ?>"><?php print $image; ?></a></li>
         <?php endforeach; ?>
       </ul>
     </div>
