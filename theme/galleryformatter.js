@@ -34,6 +34,7 @@ Drupal.galleryformatter.prepare = function(el) {
   // hide all slides, then show the first one
   $slides.hide();
   $slides.filter(':first').show();
+  $thumbsLi.filter('.slide-0:not("cloned")').addClass('active');
 
   /*
    * @TODO:

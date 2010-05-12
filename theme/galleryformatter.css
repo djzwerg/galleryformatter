@@ -29,7 +29,7 @@ li.gallery-slide { display: block; }
 }
 .gallery-thumbs li a { outline: none; }
 
-.gallery-thumbs li a img { display:block; }
+.gallery-thumbs li a img { }
 
 
 /*** end css gallery ****/

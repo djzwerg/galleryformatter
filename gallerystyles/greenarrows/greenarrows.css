@@ -1,11 +1,14 @@
 .galleryformatter-greenarrows { }
 
-.galleryformatter-greenarrows .gallery-thumbs { padding:0 33px; }
+.galleryformatter-greenarrows .gallery-thumbs { padding: 0 46px; }
 .galleryformatter-greenarrows .gallery-slides { }
 .galleryformatter-greenarrows .gallery-slide { }
 
 .galleryformatter-greenarrows .gallery-thumbs .arrow,
-.galleryformatter-greenarrows .gallery-slides a.view-full { background:url("images/sprite.png") no-repeat scroll 0 0 transparent; }
+.galleryformatter-greenarrows .gallery-slides a.view-full,
+.galleryformatter-greenarrows .gallery-thumbs .wrapper,
+.galleryformatter-greenarrows .gallery-thumbs li.active a,
+.galleryformatter-greenarrows .gallery-thumbs li a:hover { background:url("images/sprite.png") no-repeat scroll 0 0 transparent; }
 .galleryformatter-greenarrows .gallery-slides a.view-full {
   background-position:center -205px;
   height:46px; width:46px;
@@ -14,7 +17,7 @@
   right:0; top:0;
   text-indent:-9999px;
 }
-.galleryformatter-greenarrows .gallery-slides a.view-full:hover { background-position: bottom center; }
+.galleryformatter-greenarrows .gallery-slides a.view-full:hover { background-position: center -252px; }
 
 .galleryformatter-greenarrows .gallery-slides .panel-overlay {
   position: absolute;
@@ -27,10 +30,23 @@
 .galleryformatter-greenarrows .gallery-thumbs .wrapper {
   overflow: scroll;
   line-height:0;
+  background-position: center -326px;
+  background-repeat: repeat-x;
+  border-bottom: 1px solid #EEEEEE;
 }
 .galleryformatter-greenarrows .gallery-thumbs ul { list-style: none; }
-.galleryformatter-greenarrows .gallery-thumbs li { float: left;   padding: 5px 5px 5px 0; background: transparent none; }
-.galleryformatter-greenarrows .gallery-thumbs li a { display: block; }
+.galleryformatter-greenarrows .gallery-thumbs li {
+  float: left;
+  background: transparent none;
+  overflow:hidden;
+  padding: 3px 5px 0 0;
+}
+.galleryformatter-greenarrows .gallery-thumbs li a {
+  display: block;
+  padding: 19px 0 7px;
+}
+.galleryformatter-greenarrows .gallery-thumbs li a:hover { background-position: center -307px; }
+.galleryformatter-greenarrows .gallery-thumbs li.active a { background-position: center -303px; }
 
 .galleryformatter-greenarrows .gallery-thumbs .arrow {
   bottom:0;
