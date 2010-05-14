@@ -65,22 +65,16 @@ function template_preprocess_galleryformatter_formatter_galleryformatter_default
     $vars['gallery_thumbs'] = $thumbs;
     $vars['gallery_slides'] = $slides;
 
-    // starting to get the images width and height for use by the template
-    $image_path = $slides[0]['filepath']; // an image path to get image dimensions from
+    // Get the images width and height for use by the template
+    $image_path = $slides[0]['filepath']; // the first image will be used to get the dimensions of the gallery
+    $slide_dimensions = galleryformatter_getimage_dimensions($slide_preset, $image_path);
+    $thumb_dimensions = galleryformatter_getimage_dimensions($thumb_preset, $image_path);
+    $vars['gallery_slide_height'] = $slide_dimensions['height'];
+    $vars['gallery_slide_width'] = $slide_dimensions['width'];
+    $vars['gallery_thumb_height'] = $thumb_dimensions['height'];
+    $vars['gallery_thumb_width'] = $thumb_dimensions['width'];
 
-    // grab the thumb image info
-    if (file_exists($image_path)) {
-      $thumb_image = image_get_info(imagecache_create_path($thumb_preset, $image_path));
-      // set it up for the template to use
-      $vars['gallery_thumb_height'] = $thumb_image['height'];
-      $vars['gallery_thumb_width'] = $thumb_image['width'];
-
-      // grab the slide image info
-      $slide_image = image_get_info(imagecache_create_path($slide_preset, $image_path));
-      // set it up for the template to use
-      $vars['gallery_slide_height'] = $slide_image['height'];
-      $vars['gallery_slide_width'] = $slide_image['width'];
-    }
+    // setup the style class
     $vars['gallery_style'] = 'galleryformatter-'. drupal_strtolower($style);
 
     // add the necessary JS and CSS files

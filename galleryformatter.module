@@ -163,5 +163,35 @@ function galleryformatter_galleryformatter_styles() {
   return $gallerystyles;
 }
 
+/**
+  * Helper function to get dimensions of an image
+  *
+  * @return array
+  * An array key => value pairs
+  * width => value and height => value, not including px
+  */
+function galleryformatter_getimage_dimensions($presetname, $image_path) {
+  // generate the imagecache preset image path
+  $transformed_path = imagecache_create_path($presetname, $image_path);
+  // grab the preset itself
+  $preset = imagecache_preset_by_name($presetname);
 
-
+  // get the default presets names provided by galleryformatter
+  foreach (galleryformatter_imagecache_default_presets() as $key => $value) {
+    $default_presets[] = $value['presetname'];
+  }
+  // if using the default preset no need to get image info
+  $default_preset = in_array($preset['presetname'], $default_presets);
+  if (($preset['storage'] == 1) && $default_preset){
+    $ret['height'] = $preset['actions'][0]['data']['height'];
+    $ret['width'] = $preset['actions'][0]['data']['width'];
+  }
+  // otherwise check if file exists, or create it so we can get the image dimensions
+  elseif (file_exists($transformed_path) || imagecache_build_derivative($preset['actions'], $image_path, $transformed_path)) {
+    // grab the image information
+    $image = image_get_info($transformed_path);
+    $ret['height'] = $image['height'];
+    $ret['width'] = $image['width'];
+  }
+  return $ret;
+}
