@@ -173,7 +173,7 @@ function galleryformatter_field_formatter_view($entity_type, $entity, $field, $i
       );
       // integration with other modules for jQuery modal windows
       if (module_exists('colorbox')) {
-        $link_attributes['class'] .= 'colorbox';
+        $link_attributes['class'] = 'colorbox';
         $link_attributes['rel'] = 'gallery-['. $slideset_id .']';
       }
       if (module_exists('thickbox')) {
