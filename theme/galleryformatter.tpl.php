@@ -13,28 +13,24 @@
  *
  * Available variables:
  *
- * $gallery_slide_height
- * $gallery_slide_width
- * $gallery_thumb_height
- * $gallery_thumb_width
+ * $dimensions - Array containing both slides and thumbs dimensions
  * $gallery_slides - Array containing all slide images, a link to the original and its sanatized title & description ready to print
- * $gallery_thumbs - Array containing all thumbnail images ready to print
+ * $thumbs - Array containing all thumbnail images ready to print
+ * $link_to_full -  BOOLEAN wether or not we are linking slides to original images
  */
 ?>
-<?php if (count($gallery_slides) > 1): ?>
-<div class="galleryformatter galleryview <?php print $gallery_style ?>">
-  <div class="gallery-slides" style="width: <?php print $gallery_slide_width; ?>px; height: <?php print $gallery_slide_height; ?>px;">
+<div class="galleryformatter galleryview galleryformatter-<?php print $settings['style'] ?>">
+  <div class="gallery-slides" style="width: <?php print $dimensions['slides']['width']; ?>px; height: <?php print $dimensions['slides']['height']; ?>px;">
     <div class="gallery-frame">
       <ul>
-      <?php foreach ($gallery_slides as $id => $data): ?>
-        <li class="gallery-slide" id="slide-<?php print $id .'-'. $fieldname; ?>">
-          <?php print $data['link_to_original']; ?>
+      <?php foreach ($slides as $id => $data): ?>
+        <li class="gallery-slide" id="<?php print $data['hash_id']; ?>">
           <?php print $data['image']; ?>
-          <?php if ($data['title'] || $data['description']): ?>
+          <?php if ($data['title']): ?>
             <div class="panel-overlay">
               <div class="overlay-inner">
                 <?php if ($data['title']): ?><h3><?php print $data['title']; ?></h3><?php endif; ?>
-                <?php if ($data['description']): ?><p><?php print $data['description']; ?></p><?php endif; ?>
+
               </div>
             </div>
           <?php endif; ?>
@@ -43,14 +39,15 @@
       </ul>
     </div>
   </div>
-  <div class="gallery-thumbs" style="width: <?php print $gallery_slide_width; ?>px;">
+  <?php if(!empty($thumbs)): ?>
+  <div class="gallery-thumbs" style="width: <?php print $dimensions['slides']['width']; ?>px;">
     <div class="wrapper">
       <ul>
-        <?php foreach ($gallery_thumbs as $id => $image): ?>
-          <li class="slide-<?php print $id; ?>" style="width: <?php print $gallery_thumb_width; ?>px;"><a href="#slide-<?php print $id .'-'. $fieldname; ?>"><?php print $image; ?></a></li>
+        <?php foreach ($thumbs as $id => $data): ?>
+          <li class="slide-<?php print $id; ?>" style="width: <?php print $dimensions['thumbs']['width']; ?>px;"><a href="#<?php print $data['hash_id']; ?>"><?php print $data['image']; ?></a></li>
         <?php endforeach; ?>
       </ul>
     </div>
   </div>
+  <?php endif; ?>
 </div>
-<?php endif; ?>

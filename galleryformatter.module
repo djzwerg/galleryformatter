@@ -1,85 +1,8 @@
 <?php
 // $Id$
+  include_once DRUPAL_ROOT .'/'. drupal_get_path('module', 'galleryformatter') .'/includes/galleryformatter_imagestyles.inc';
+// module_load_include('inc', 'galleryformatter', 'galleryformatter_imagecache');
 
-include_once dirname(__FILE__) . '/includes/galleryformatter_imagecache.inc';
-
-/**
-  * Implementation of hook_widget_settings_alter().
-  *
-  * Alters the imagefield widget so that any image field can be used as a gallery
-  * Inserts two new form elements for selecting the thumb imagecache preset and the slide imagecache preset in its own fieldset
-  */
-function galleryformatter_widget_settings_alter(&$settings, $op, $widget) {
-  $widget_types = array('imagefield_widget');
-  if ((!empty($widget['type']) && in_array($widget['type'], $widget_types)) || (!empty($widget['widget_type']) && in_array($widget['widget_type'], $widget_types))) {
-    switch ($op) {
-      case 'form':
-        $options = array(t('None'), );
-        // get a list of all preset names for our form options
-        foreach (imagecache_presets() as $id => $preset) {
-          $options[$preset['presetname']] = $preset['presetname'];
-        }
-        // only show collapsed if no selections have been made
-        $collapsed = (($widget['slide_preset'] == '0') && ($widget['thumb_preset'] == '0'));
-
-        $settings['galleryformatter'] = array(
-          '#type' => 'fieldset',
-          '#title' => t('Gallery Formatter'),
-          '#collapsible' => TRUE,
-          '#collapsed' => $collapsed,
-          '#description' => t('Setting <strong>both</strong> values below will trigger the gallery behaviour.') .'<p>'. t("Don't forget to set the <strong>Number of values</strong> to either <em>Unlimitted</em> or the maximum number of images each gallery could accept.") .'</p>',
-        );
-        $settings['galleryformatter']['slide_preset'] = array(
-          '#type' => 'select',
-          '#title' => t('Select the slide preset'),
-          '#options' => $options,
-          '#default_value' => $widget['slide_preset'],
-          '#description' => t('Select the imagecache preset you would like to show when clicked on the thumbnail.'),
-        );
-        $settings['galleryformatter']['thumb_preset'] = array(
-          '#type' => 'select',
-          '#title' => t('Select the thumbnail preset'),
-          '#options' => $options,
-          '#default_value' => $widget['thumb_preset'],
-          '#description' => t('Select the imagecache preset you would like to show for the thumbnails list.'),
-        );
-        $style_options = array();
-        $styles = module_invoke_all('galleryformatter_styles');
-        // The keys used for options must be valid html id-s.
-        foreach ($styles as $style) {
-          $style_options[$style] = $style;
-        }
-        ksort($style_options);
-        $settings['galleryformatter']['style'] = array(
-          '#type' => 'select',
-          '#title' => t('Style'),
-          '#options' => array('nostyle' => t('No style')) + $style_options,
-          '#default_value' => isset($widget['style']) ? $widget['style'] : 'default',
-          '#description' => t('Choose the gallery style.'),
-        );
-        break;
-
-      case 'save':
-        $settings[] = 'slide_preset';
-        $settings[] = 'thumb_preset';
-        $settings[] = 'style';
-        break;
-    }
-  }
-}
-
-/**
- * Implementation of hook_theme().
- */
-function galleryformatter_theme() {
-  return array(
-    'galleryformatter_formatter_galleryformatter_default' => array(
-      'arguments' => array('element' => NULL),
-      'template' => 'theme/galleryformatter',
-      'file' => 'includes/galleryformatter.theme.inc',
-    ),
-  );
-}
 
 /**
  * Implementation of hook_field_formatter_info().
@@ -88,39 +11,195 @@ function galleryformatter_field_formatter_info() {
   return array(
     'galleryformatter_default' => array(
       'label' => t('jQuery Gallery'),
-      'field types' => array('filefield'),
-      'multiple values' => CONTENT_HANDLE_MULTIPLE,
+      'field types' => array('image'),
+      'settings' => array(
+        'slide_style' => 'galleryformatter_slide',
+        'thumb_style' => 'galleryformatter_thumb',
+        'style' => 'Greenarrows',
+        'link_to_full' => 1,
+        'link_to_full_style' => 0,
+      ),
       'description' => t('Display multi-value fields as an jQuery Image gallery.'),
     ),
   );
 }
+/**
+ * Implements hook_field_formatter_settings_form().
+ */
+function galleryformatter_field_formatter_settings_form($field, $instance, $view_mode) {
+  $display = $instance['display'][$view_mode];
+  $settings = $display['settings'];
+
+  $form = array();
+  $options = array(t('None'),);
+  // get a list of all style names for our form options
+  foreach (image_styles() as $id => $style) {
+    $options[$id] = $id;
+  }
+  $form['slide_style'] = array(
+    '#type' => 'select',
+    '#title' => t('Select the slide style'),
+    '#options' => $options,
+    '#default_value' => $settings['slide_style'],
+    '#description' => t('Select the imagecache style you would like to show when clicked on the thumbnail.'),
+  );
+  $form['thumb_style'] = array(
+    '#type' => 'select',
+    '#title' => t('Select the thumbnail style'),
+    '#options' => $options,
+    '#default_value' => $settings['thumb_style'],
+    '#description' => t('Select the imagecache style you would like to show for the thumbnails list.'),
+  );
+  $style_options = array();
+  $styles = module_invoke_all('galleryformatter_styles');
+  // The keys used for options must be valid html id-s.
+  foreach ($styles as $style) {
+    $style_options[$style] = $style;
+  }
+  ksort($style_options);
+  $form['style'] = array(
+    '#type' => 'select',
+    '#title' => t('Style'),
+    '#options' => array('nostyle' => t('No style')) + $style_options,
+    '#default_value' => $settings['style'],
+    '#description' => t('Choose the gallery style.'),
+  );
+  $form['link_to_full'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('Link slides to the full image'),
+    '#default_value' => $settings['link_to_full'],
+    '#description' => t('If you check this on, the slides will be linked to the style you choose in <em>Select the full image style</em> below.'),
+  );
+  $options[0] = t('None (original image)');
+  $form['link_to_full_style'] = array(
+    '#type' => 'select',
+    '#title' => t('Select the full image style'),
+    '#options' => $options,
+    '#default_value' => $settings['link_to_full_style'],
+    '#description' => t('Select the imagecache style you would like to show when clicked on the thumbnail.<br />If you select none, the the link will point to the original image.'),
+  );
+
+  return $form;
+}
 
 /**
-  * Helper function to get the widget settings.
-  */
-function galleryformatter_get_field_settings($field_name) {
-  $field = content_fields($field_name);
-  return $field['widget'];
+ * Implements hook_field_formatter_settings_summary().
+ */
+function galleryformatter_field_formatter_settings_summary($field, $instance, $view_mode) {
+  $display = $instance['display'][$view_mode];
+  $settings = $display['settings'];
+
+  $summary[] = t('Slides style: @value', array('@value' => $settings['slide_style']));
+  $summary[] = t('Thumbnails style: @value', array('@value' => $settings['thumb_style']));
+  $summary[] = t('Gallery style: @value', array('@value' => $settings['style']));
+  if ($settings['link_to_full']) {
+    $summary[] = t('Linking to full image');
+  }
+  $full_image_style = $settings['link_to_full_style'] ? $settings['link_to_full_style'] : t('None (original image)');
+  $summary[] = t('Full image style: @value', array('@value' => $full_image_style));
+
+  return implode ('<br />', $summary);
+}
+
+/**
+ * Implementation of hook_theme().
+ */
+function galleryformatter_theme() {
+  return array(
+    'galleryformatter' => array(
+      'variables' => array('slides' => NULL, 'thumbs' => NULL, 'settings' => NULL, 'dimensions' => NULL),
+      'template' => 'theme/galleryformatter'
+    )
+  );
+}
+
+/**
+ * Implements hook_field_formatter_view().
+ */
+function galleryformatter_field_formatter_view($entity_type, $entity, $field, $instance, $langcode, $items, $display) {
+  // if there are no images, dont do anything else
+  if(empty($items)){
+    return;
+  }
+  $modulepath = drupal_get_path('module', 'galleryformatter');
+  $element = array();
+  $settings = $display['settings'];
+  $settings['style'] = strtolower($settings['style']);
+  $num_of_images = count($items);
+
+  // prepare the renderable array
+  $renderitems = array();
+  $renderitems['thumbs'] = array();
+  foreach ($items as $delta => $item){
+    /*
+     *  prepare slides
+     */
+    // Grab and sanitize image information
+    // $renderitems['slides'][$delta]['description'] = check_plain($item['description']); // so far no description in d7 image fields
+    $renderitems['slides'][$delta]['title'] = check_plain($item['title']);
+    // Check if alt attribute is already set, if not use the filename as alt attribute
+    $renderitems['slides'][$delta]['alt'] = (isset($item['alt']) && !empty($item['alt'])) ? check_plain($item['alt']) : $item['filename'];
+    $item['alt'] = $renderitems['slides'][$delta]['alt'];
+    // prepare the unique hash id per image
+    $slideset_id = $field['field_name'] . '-' . $entity->nid;
+    $renderitems['slides'][$delta]['hash_id'] = 'slide-' . $delta . '-' . $slideset_id;
+
+    $renderitems['slides'][$delta]['image'] = theme('image_formatter', array(
+          'item' => $item,
+          'image_style' => $settings['slide_style'],
+        )
+      );
+    /*
+     *  prepare thumbs
+     */
+    if($num_of_images > 1){
+      $renderitems['thumbs'][$delta]['image'] = theme('image_formatter', array(
+          'item' => $item,
+          'image_style' => $settings['thumb_style'],
+        )
+      );
+      $renderitems['thumbs'][$delta]['hash_id'] = 'slide-' . $delta . '-' . $slideset_id;
+    }
+  }
+  $dimensions['slides'] = galleryformatter_getimage_dimensions($settings['slide_style'], $items[0]['uri']);
+
+  if($num_of_images > 1){
+   $dimensions['thumbs'] = galleryformatter_getimage_dimensions($settings['thumb_style'], $items[0]['uri']);
+   drupal_add_js($modulepath . '/theme/infiniteCarousel.js');
+   drupal_add_js($modulepath . '/theme/galleryformatter.js');
+  }
+  galleryformatter_add_css($settings['style']);
+  drupal_add_css($modulepath . '/theme/galleryformatter.css');
+
+  // prepare the variables for our theme function
+  $element = array(
+      '#theme' => 'galleryformatter',
+      '#slides' => $renderitems['slides'],
+      '#thumbs' => $renderitems['thumbs'],
+      '#settings' => $settings,
+      '#dimensions' => $dimensions,
+    );
+  return $element;
 }
 
 // The code below was adapted from the great quicktabs module
 
 /**
-  * Fetch the necessary CSS files for the gallery styles.
-  */
+ * Fetch the necessary CSS files for the gallery styles.
+ */
 function galleryformatter_add_css($style) {
   // Add galleryformatter CSS.
-  drupal_add_css(drupal_get_path('module', 'galleryformatter') .'/theme/galleryformatter.css');
+  drupal_add_css(drupal_get_path('module', 'galleryformatter') . '/theme/galleryformatter.css');
 
-  if ($style_css != 'nostyle') {
+  if ($style != 'nostyle') {
     $style_css = _galleryformatter_get_style_css($style);
-    drupal_add_css($style_css, 'module');
+    drupal_add_css($style_css);
   }
 }
 
 /**
-  * Helper function to get the css file for given style.
-  */
+ * Helper function to get the css file for given style.
+ */
 function _galleryformatter_get_style_css($style = 'nostyle') {
   static $gallerystyles;
 
@@ -129,7 +208,7 @@ function _galleryformatter_get_style_css($style = 'nostyle') {
       $gallerystyles = module_invoke_all('galleryformatter_styles');
     }
     foreach ($gallerystyles as $css_file => $gallerystyle) {
-      if ($style == $gallerystyle) {
+      if ($style == strtolower($gallerystyle)) {
         return $css_file;
       }
     }
@@ -150,44 +229,43 @@ function _galleryformatter_get_style_css($style = 'nostyle') {
  *   file for a gallery formatter style. Each value should be the name of the style.
  */
 function galleryformatter_galleryformatter_styles() {
-  $gallerystyles_directory = drupal_get_path('module', 'galleryformatter') .'/gallerystyles';
-  $files = file_scan_directory($gallerystyles_directory, '\.css$');
-
+  $gallerystyles_directory = drupal_get_path('module', 'galleryformatter') . '/gallerystyles';
+  $files = file_scan_directory($gallerystyles_directory, '/\.css$/');
   $gallerystyles = array();
   foreach ($files as $file) {
     // Skip RTL files.
     if (!strpos($file->name, '-rtl')) {
-      $gallerystyles[$file->filename] = drupal_ucfirst($file->name);
+      $gallerystyles[$file->uri] = drupal_ucfirst($file->name);
     }
   }
   return $gallerystyles;
 }
 
 /**
-  * Helper function to get dimensions of an image
-  *
-  * @return array
-  * An array key => value pairs
-  * width => value and height => value, not including px
-  */
-function galleryformatter_getimage_dimensions($presetname, $image_path) {
-  // generate the imagecache preset image path
-  $transformed_path = imagecache_create_path($presetname, $image_path);
-  // grab the preset itself
-  $preset = imagecache_preset_by_name($presetname);
+ * Helper function to get dimensions of an image
+ *
+ * @return array
+ * An array key => value pairs
+ * width => value and height => value, not including px
+ */
+function galleryformatter_getimage_dimensions($stylename, $image_path) {
+  // generate the image style image path
 
-  // get the default presets names provided by galleryformatter
-  foreach (galleryformatter_imagecache_default_presets() as $key => $value) {
-    $default_presets[] = $value['presetname'];
+  $transformed_path =  image_style_path($stylename, $image_path);
+  // grab the style itself
+
+  $style = image_style_load($stylename);
+
+  // if using the default style no need to get image info
+  $default_style = ($style['module'] == 'galleryformatter');
+  dpm($style['storage']);
+  if (($style['storage'] == 4) && $default_style) {
+    $ret['height'] = $style['effects'][0]['data']['height'];
+    $ret['width'] = $style['effects'][0]['data']['width'];
   }
-  // if using the default preset no need to get image info
-  $default_preset = in_array($preset['presetname'], $default_presets);
-  if (($preset['storage'] == 1) && $default_preset){
-    $ret['height'] = $preset['actions'][0]['data']['height'];
-    $ret['width'] = $preset['actions'][0]['data']['width'];
-  }
+
   // otherwise check if file exists, or create it so we can get the image dimensions
-  elseif (file_exists($transformed_path) || imagecache_build_derivative($preset['actions'], $image_path, $transformed_path)) {
+  if (file_exists($transformed_path) || image_style_create_derivative($style, $image_path, $transformed_path)) {
     // grab the image information
     $image = image_get_info($transformed_path);
     $ret['height'] = $image['height'];

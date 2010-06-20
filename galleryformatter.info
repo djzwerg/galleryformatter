@@ -2,9 +2,14 @@
 
 name = Gallery Formatter
 description = Provides a jquery gallery CCK formatter for imagefield
-dependencies[] = content
-dependencies[] = imagefield
-dependencies[] = imagecache
+dependencies[] = image
+dependencies[] = file
 
-core = 6.x
+core = 7.x
 package = User interface
+
+files[] = galleryformatter.install
+files[] = galleryformatter.module
+files[] = includes/galleryformatter.theme.inc
+files[] = includes/galleryformatter_imagecache.inc
+files[] = theme/galleryformatter.tpl.php
