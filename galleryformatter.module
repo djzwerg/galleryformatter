@@ -137,9 +137,26 @@ function galleryformatter_field_formatter_view($entity_type, $entity, $field, $i
     // Grab and sanitize image information
     // $renderitems['slides'][$delta]['description'] = check_plain($item['description']); // so far no description in d7 image fields
     $renderitems['slides'][$delta]['title'] = check_plain($item['title']);
+
     // Check if alt attribute is already set, if not use the filename as alt attribute
     $renderitems['slides'][$delta]['alt'] = (isset($item['alt']) && !empty($item['alt'])) ? check_plain($item['alt']) : $item['filename'];
     $item['alt'] = $renderitems['slides'][$delta]['alt'];
+    // If the title is empty use description, alt or the node title in that order.
+    if (empty($item['data']['title'])) {
+      if (!empty($item['data']['description'])) {
+        $title = $description;
+      }
+      elseif (!empty($item['data']['alt'])) {
+        $title = $alt;
+      }
+      else {
+        $title = check_plain($entity->title);
+        // if we have more than one image, add the image count to the title so they are not all the same.
+        $title = ($num_of_images > 1) ? $title . t(' image ') . ($delta + 1) : $title;
+      }
+    }
+
+
     // prepare the unique hash id per image
     $slideset_id = $field['field_name'] . '-' . $entity->nid;
     $renderitems['slides'][$delta]['hash_id'] = 'slide-' . $delta . '-' . $slideset_id;
@@ -149,6 +166,30 @@ function galleryformatter_field_formatter_view($entity_type, $entity, $field, $i
           'image_style' => $settings['slide_style'],
         )
       );
+    if ($settings['link_to_full'] == TRUE) {
+      $vars['gallery_style'] = 'galleryformatter-view-full '; // give the gallery a class for themers to play with
+      $link_attributes = array(
+        'title' => $title,
+      );
+      // integration with other modules for jQuery modal windows
+      if (module_exists('colorbox')) {
+        $link_attributes['class'] .= ' colorbox';
+        $link_attributes['rel'] = 'gallery-['. $slideset_id .']';
+      }
+      if (module_exists('thickbox')) {
+        $link_attributes['class'] .= ' thickbox';
+      }
+      if (module_exists('shadowbox')) {
+        $link_attributes['rel'] = 'shadowbox['.$slideset_id .']';
+      }
+      if (module_exists('lightbox2')) {
+        $link_attributes['rel'] = 'lightbox['. $slideset_id .']';
+      }
+      $link_url = $settings['link_to_full_style'] ? image_style_url($settings['link_to_full_style'], $item['uri']) : file_create_url($item['uri']);
+      // link the slide image and include the span for the icon
+      $renderitems['slides'][$delta]['image'] = l('<span class="galleryformatter-view-full" title="'. t('View the full image') .'">'. t('View the full image') .'</span>'. $renderitems['slides'][$delta]['image'], $link_url, array('attributes' => $link_attributes, 'html' => TRUE,));
+    } // END linking to original
+
     /*
      *  prepare thumbs
      */
