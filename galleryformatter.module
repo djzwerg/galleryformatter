@@ -258,7 +258,6 @@ function galleryformatter_getimage_dimensions($stylename, $image_path) {
 
   // if using the default style no need to get image info
   $default_style = ($style['module'] == 'galleryformatter');
-  dpm($style['storage']);
   if (($style['storage'] == 4) && $default_style) {
     $ret['height'] = $style['effects'][0]['data']['height'];
     $ret['width'] = $style['effects'][0]['data']['width'];
