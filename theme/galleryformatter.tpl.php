@@ -18,6 +18,7 @@
  * $thumbs - Array containing all thumbnail images ready to print
  * $link_to_full -  BOOLEAN wether or not we are linking slides to original images
  */
+
 ?>
 <div class="galleryformatter galleryview galleryformatter-<?php print $settings['style'] ?>">
   <div class="gallery-slides" style="width: <?php print $dimensions['slides']['width']; ?>px; height: <?php print $dimensions['slides']['height']; ?>px;">
@@ -26,11 +27,10 @@
       <?php foreach ($slides as $id => $data): ?>
         <li class="gallery-slide" id="<?php print $data['hash_id']; ?>">
           <?php print $data['image']; ?>
-          <?php if ($data['title']): ?>
+          <?php if ((!empty($data['title'])): ?>
             <div class="panel-overlay">
               <div class="overlay-inner">
                 <?php if ($data['title']): ?><h3><?php print $data['title']; ?></h3><?php endif; ?>
-
               </div>
             </div>
           <?php endif; ?>
