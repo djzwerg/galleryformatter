@@ -28,7 +28,6 @@ function galleryformatter_field_formatter_info() {
  * Implements hook_field_formatter_settings_form().
  */
 function galleryformatter_field_formatter_settings_form($field, $instance, $view_mode) {
-  dpm($field);
   $display = $instance['display'][$view_mode];
   $settings = $display['settings'];
 
