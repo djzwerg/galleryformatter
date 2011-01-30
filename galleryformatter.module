@@ -166,7 +166,6 @@ function galleryformatter_field_formatter_view($entity_type, $entity, $field, $i
           'image_style' => $settings['slide_style'],
         )
       );
-   dpm(get_defined_vars());
     if ($settings['link_to_full'] == TRUE) {
       /* @TODO
        * doesnt work yet
