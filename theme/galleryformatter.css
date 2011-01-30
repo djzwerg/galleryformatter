@@ -5,6 +5,8 @@
 
 .galleryformatter .gallery-slides,
 .galleryformatter .gallery-thumbs { margin: 0 auto; }
+.galleryformatter .gallery-slides ul,
+.galleryformatter .gallery-thumbs ul { margin: 0; }
 
 /** css gallery */
 li.gallery-slide { display: block; }

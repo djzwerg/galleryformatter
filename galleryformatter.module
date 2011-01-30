@@ -135,11 +135,11 @@ function galleryformatter_field_formatter_view($entity_type, $entity, $field, $i
      *  prepare slides
      */
     // Grab and sanitize image information
-    // $renderitems['slides'][$delta]['description'] = check_plain($item['description']); // so far no description in d7 image fields
-    $renderitems['slides'][$delta]['title'] = check_plain($item['title']);
+    // $renderitems['slides'][$delta]['description'] = $item['description']; // so far no description in d7 image fields
+    $renderitems['slides'][$delta]['title'] = $item['title'];
 
     // Check if alt attribute is already set, if not use the filename as alt attribute
-    $renderitems['slides'][$delta]['alt'] = (isset($item['alt']) && !empty($item['alt'])) ? check_plain($item['alt']) : $item['filename'];
+    $renderitems['slides'][$delta]['alt'] = (isset($item['alt']) && !empty($item['alt'])) ? $item['alt'] : $item['filename'];
     $item['alt'] = $renderitems['slides'][$delta]['alt'];
     // If the title is empty use description, alt or the node title in that order.
     if (empty($item['data']['title'])) {
@@ -150,7 +150,7 @@ function galleryformatter_field_formatter_view($entity_type, $entity, $field, $i
         $title = $alt;
       }
       else {
-        $title = check_plain($entity->title);
+        $title = $entity->title;
         // if we have more than one image, add the image count to the title so they are not all the same.
         $title = ($num_of_images > 1) ? $title . t(' image ') . ($delta + 1) : $title;
       }
