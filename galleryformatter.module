@@ -225,7 +225,7 @@ function galleryformatter_field_formatter_view($entity_type, $entity, $field, $i
       }
       $link_url = $settings['link_to_full_style'] ? image_style_url($settings['link_to_full_style'], $item['uri']) : file_create_url($item['uri']);
       // link the slide image and include the span for the icon
-      $renderitems['slides'][$delta]['image'] = l('<span class="galleryformatter-view-full" title="'. t('View the full image') .'">'. t('View the full image') .'</span>'. $renderitems['slides'][$delta]['image'], $link_url, array('attributes' => $link_attributes, 'html' => TRUE,));
+      $renderitems['slides'][$delta]['image'] = l('<span class="view-full" title="'. t('View the full image') .'">'. t('View the full image') .'</span>', $link_url, array('attributes' => $link_attributes, 'html' => TRUE,)) . $renderitems['slides'][$delta]['image'];
     } // END linking to original
 
     /*

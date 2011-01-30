@@ -79,6 +79,14 @@
           $(this).bind('goto', function (event, page) {
               gotoPage(page);
           });
+
+          // custom events to trigger next and prev pages
+          $(this).bind('next', function () {
+            gotoPage(currentPage + 1);
+          });
+          $(this).bind('prev', function () {
+            gotoPage(currentPage - 1);
+          })
       });
   };
 })(jQuery);

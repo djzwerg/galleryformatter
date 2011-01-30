@@ -17,7 +17,7 @@
 li.gallery-slide { display: block; }
 
 .gallery-thumbs .wrapper,
-.gallery-slides { overflow: hidden; }
+.gallery-slides { overflow: hidden; position: relative; }
 .gallery-frame { width: 99999px; }
 
 .gallery-slides .gallery-slide { float: left; position: relative; }
@@ -33,9 +33,30 @@ li.gallery-slide { display: block; }
 .gallery-thumbs ul li {
   display:block;
   float:left;
+  padding: 0 5px 0 0;
 }
 .gallery-thumbs li a { outline: none; }
 /*** end css gallery ****/
+
+/** buttons **/
+.galleryformatter .view-full {
+ position: absolute;
+}
+.galleryformatter .slide-button {
+  top: 42%;
+  position: absolute;
+  display: block;
+  cursor: pointer;
+}
+.galleryformatter .prev-slide {
+  left: 0;
+}
+.galleryformatter .next-slide {
+  right: 0;
+}
+.galleryformatter .gallery-thumbs .arrow {
+ cursor:pointer;
+}
 
 /*** js enabled gallery css **/
 .gallery-processed .gallery-frame { position:relative; }

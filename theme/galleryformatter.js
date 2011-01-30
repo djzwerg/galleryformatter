@@ -23,6 +23,8 @@ Drupal.galleryformatter.prepare = function(el) {
     var $thumbsLi = $('li', $thumbs);
     var thumbWidth = $thumbsLi.filter(':first').width() + 'px';
     var liWidth = $thumbsLi.outerWidth(); // includes padding
+    var $wrapper = $('.wrapper', $el);
+    var visibleWidth = $wrapper.outerWidth();
 
     /*
      * Only start the thumbs carrousel if needed
@@ -31,6 +33,9 @@ Drupal.galleryformatter.prepare = function(el) {
       $('ul', $thumbs).width('99999px');
       $thumbs.infiniteCarousel();
       $thumbsLi = $('li', $thumbs); // we need to reselect because infiniteCarousel inserts new empty li elements if necessary
+      // we need to reselect because infiniteCarousel inserts new empty li elements if necessary
+      $el = $(el);
+      $thumbsLi = $('.gallery-thumbs ul li', $el);
     }
 
     $thumbsLi = $('li', $thumbs); // we need to reselect because infiniteCarousel inserts new empty li elements if necessary
@@ -91,5 +96,65 @@ Drupal.galleryformatter.prepare = function(el) {
     else {
       showFirstSlide();
     }
+
+    /*
+     * Create a public interface to move to the next and previous images
+     */
+    // Shows the previous slide and scrolls to the previous page if necessary
+    $thumbs.bind('showPrev', function (event) {
+      var currentScroll = $wrapper.get(0).scrollLeft;
+      var $prevThumbLi = $thumbsLi.filter('.active').prevAll().not('.cloned, .empty, .active').filter(':first');
+      // if no results we are on the first element
+      if(!$prevThumbLi.size()) {
+        // select the last one
+        $prevThumbLi = $thumbsLi.not('.empty, .cloned').filter(':last');
+      }
+      var $slideToClick = $('a', $prevThumbLi);
+      var $prevIsVisible = (($prevThumbLi.get(0).offsetLeft >= currentScroll) && ($prevThumbLi.get(0).offsetLeft <= (visibleWidth + currentScroll)));
+      if($prevIsVisible) {
+        $slideToClick.trigger('click');
+      }
+      else {
+        $thumbs.trigger('prev');
+        $slideToClick.trigger('click');
+      }
+    });
+    // Shows the next slide and scrolls to the next page if necessary
+    $thumbs.bind('showNext', function (event) {
+      var currentScroll = $wrapper.get(0).scrollLeft;
+      // this selector could be optimized perhaps, but
+      var $nextThumbLi = $thumbsLi.filter('.active').nextAll().not('.cloned, .empty, .active').filter(':first');
+      // if no results we are on the last element
+      if(!$nextThumbLi.size()) {
+        // select the first one
+        $nextThumbLi = $thumbsLi.not('.empty, .cloned').filter(':first');
+      }
+
+      var $slideToClick = $('a', $nextThumbLi);
+      var $nextIsVisible = (($nextThumbLi.get(0).offsetLeft >= currentScroll) && ($nextThumbLi.get(0).offsetLeft <= (visibleWidth + currentScroll)));
+      if($nextIsVisible) {
+        var $slideToClick = $('a', $nextThumbLi);
+        $('a', $nextThumbLi).trigger('click');
+      }
+      else {
+        $thumbs.trigger('next');
+        $slideToClick.trigger('click');
+      }
+    });
+
+    $('img', $slideContainer).click(function(){
+      $thumbs.trigger('showNext');
+    });
+
+     // Setup buttons for next/prev slide
+    $slideButtons = ('<a class="prev-slide slide-button" title="'+ Drupal.t('Previous image') +'">&lt;</a><a class="next-slide slide-button" title="'+ Drupal.t('Next image') +'">&gt;</a>');
+    $('.gallery-slides', $el).append($slideButtons);
+    // Trigger the appropiate events on click
+    $('a.prev-slide', $el).click(function(){
+      $thumbs.trigger('showPrev');
+    });
+    $('a.next-slide', $el).click(function(){
+      $thumbs.trigger('showNext');
+    });
   })(jQuery);
 }
