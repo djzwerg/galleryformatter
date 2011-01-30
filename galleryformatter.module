@@ -18,6 +18,7 @@ function galleryformatter_field_formatter_info() {
         'style' => 'Greenarrows',
         'link_to_full' => 1,
         'link_to_full_style' => 0,
+        'modal' => 'none',
       ),
       'description' => t('Display multi-value fields as an jQuery Image gallery.'),
     ),
@@ -27,6 +28,7 @@ function galleryformatter_field_formatter_info() {
  * Implements hook_field_formatter_settings_form().
  */
 function galleryformatter_field_formatter_settings_form($field, $instance, $view_mode) {
+  dpm($field);
   $display = $instance['display'][$view_mode];
   $settings = $display['settings'];
 
@@ -77,6 +79,35 @@ function galleryformatter_field_formatter_settings_form($field, $instance, $view
     '#options' => $options,
     '#default_value' => $settings['link_to_full_style'],
     '#description' => t('Select the imagecache style you would like to show when clicked on the thumbnail.<br />If you select none, the the link will point to the original image.'),
+    '#states' => array(
+      'visible' => array(
+        ':input[name="fields['. $field['field_name'] .'][settings_edit_form][settings][link_to_full]"]' => array('checked' => TRUE),
+        )
+      )
+  );
+  $modal_options = array();
+  // integration with other modules for jQuery modal windows
+  if (module_exists('colorbox')) {
+   $modal_options['colorbox'] = 'colorbox';
+  }
+  if (module_exists('shadowbox')) {
+    $modal_options['shadowbox'] = 'shadowbox';
+  }
+  if (module_exists('lightbox2')) {
+    $modal_options['lightbox2'] = 'lightbox2';
+  }
+  $modal_options['none'] = t('Do not use modal');
+  $form['modal'] = array(
+   '#type' => 'select',
+   '#title' => t('Use jQuery modal for full image link'),
+   '#options' => $modal_options,
+   '#default_value' => $settings['modal'],
+   '#description' => t("Select which jQuery modal module you'd like to display the full link image in, if any."),
+   '#states' => array(
+      'visible' => array(
+        ':input[name="fields['. $field['field_name'] .'][settings_edit_form][settings][link_to_full]"]' => array('checked' => TRUE),
+        )
+      )
   );
 
   return $form;
@@ -92,11 +123,14 @@ function galleryformatter_field_formatter_settings_summary($field, $instance, $v
   $summary[] = t('Slides style: @value', array('@value' => $settings['slide_style']));
   $summary[] = t('Thumbnails style: @value', array('@value' => $settings['thumb_style']));
   $summary[] = t('Gallery style: @value', array('@value' => $settings['style']));
+  $summary[] = $settings['link_to_full'] ? t('Linking to full image') : t('Not linking to full image');
+
   if ($settings['link_to_full']) {
-    $summary[] = t('Linking to full image');
+    $full_image_style = $settings['link_to_full_style'] ? $settings['link_to_full_style'] : t('None (original image)');
+    $summary[] = t('Full image style: @value', array('@value' => $full_image_style));
+
+    $summary[] =  t('Modal used for full image: @value', array('@value' => $settings['modal']));
   }
-  $full_image_style = $settings['link_to_full_style'] ? $settings['link_to_full_style'] : t('None (original image)');
-  $summary[] = t('Full image style: @value', array('@value' => $full_image_style));
 
   return implode ('<br />', $summary);
 }
@@ -174,19 +208,21 @@ function galleryformatter_field_formatter_view($entity_type, $entity, $field, $i
       $link_attributes = array(
         'title' => $title,
       );
+
       // integration with other modules for jQuery modal windows
-      if (module_exists('colorbox')) {
-        $link_attributes['class'] = 'colorbox';
-        $link_attributes['rel'] = 'gallery-['. $slideset_id .']';
-      }
-      if (module_exists('thickbox')) {
-        $link_attributes['class'] = 'thickbox';
-      }
-      if (module_exists('shadowbox')) {
-        $link_attributes['rel'] = 'shadowbox['.$slideset_id .']';
-      }
-      if (module_exists('lightbox2')) {
-        $link_attributes['rel'] = 'lightbox['. $slideset_id .']';
+      switch($settings['modal']) {
+        case 'none':
+          break;
+        case 'colorbox':
+          $link_attributes['class'] = 'colorbox';
+          $link_attributes['rel'] = 'gallery-['. $slideset_id .']';
+          break;
+        case 'shadowbox':
+          $link_attributes['rel'] = 'shadowbox['.$slideset_id .']';
+          break;
+        case 'lightbox2':
+          $link_attributes['rel'] = 'lightbox['. $slideset_id .']';
+          break;
       }
       $link_url = $settings['link_to_full_style'] ? image_style_url($settings['link_to_full_style'], $item['uri']) : file_create_url($item['uri']);
       // link the slide image and include the span for the icon
