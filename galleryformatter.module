@@ -1,5 +1,4 @@
 <?php
-// $Id$
   include_once DRUPAL_ROOT .'/'. drupal_get_path('module', 'galleryformatter') .'/includes/galleryformatter_imagestyles.inc';
 // module_load_include('inc', 'galleryformatter', 'galleryformatter_imagecache');
 

@@ -1,4 +1,3 @@
-// $Id$
 
 /**
  * Plugin written by the great jqueryfordesigners.com
