@@ -1,5 +1,4 @@
 <?php
-// $Id$
 /**
  * @file
  * Template file for the galleryformatter default formatter

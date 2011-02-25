@@ -1,4 +1,3 @@
-// $Id$
 
 Drupal.behaviors.galleryformatter = {
   attach: function (context) {
