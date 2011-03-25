@@ -216,6 +216,7 @@ function galleryformatter_field_formatter_view($entity_type, $entity, $field, $i
           break;
         case 'shadowbox':
           $link_attributes['rel'] = 'shadowbox['.$slideset_id .']';
+          $element['#attached']['library'][] = array('shadowbox', 'shadowbox');
           break;
         case 'lightbox2':
           $link_attributes['rel'] = 'lightbox['. $slideset_id .']';
@@ -249,13 +250,12 @@ function galleryformatter_field_formatter_view($entity_type, $entity, $field, $i
   drupal_add_css($modulepath . '/theme/galleryformatter.css');
 
   // prepare the variables for our theme function
-  $element = array(
-      '#theme' => 'galleryformatter',
-      '#slides' => $renderitems['slides'],
-      '#thumbs' => $renderitems['thumbs'],
-      '#settings' => $settings,
-      '#dimensions' => $dimensions,
-    );
+  $element['#theme'] ='galleryformatter';
+  $element['#slides'] = $renderitems['slides'];
+  $element['#thumbs'] = $renderitems['thumbs'];
+  $element['#settings'] = $settings;
+  $element['#dimensions'] = $dimensions;
+
   return $element;
 }
 
