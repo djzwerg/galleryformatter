@@ -162,6 +162,11 @@ function galleryformatter_field_formatter_view($entity_type, $entity, $field, $i
   // prepare the renderable array
   $renderitems = array();
   $renderitems['thumbs'] = array();
+
+  // get the unique entity id for later
+  $ids = entity_extract_ids($entity_type, $entity);
+  $entity_id =  $ids[0];
+
   foreach ($items as $delta => $item){
     /*
      *  prepare slides
@@ -189,27 +194,7 @@ function galleryformatter_field_formatter_view($entity_type, $entity, $field, $i
       }
     }
 
-    /**
-     * Here we prepare the unique hash id per image
-     * where we use a unique id of the entity, and since this
-     * is called once per image, we dont want to use
-     * entity_extract_ids()) for common use cases
-     */
-    switch($entity_type) {
-      case 'node':
-        $entity_id = $entity->nid;
-        break;
-      case 'user':
-        $entity_id = $entity->uid;
-        break;
-      case 'taxonomy':
-        $entity_id = $entity->tid;
-        break;
-      // for other entity types, we have to use it
-      default:
-        $ids = entity_extract_ids($entity_type, $entity);
-        $entity_id =  $ids[0];
-    }
+    // prepare the unique hash id per image
     $slideset_id = $field['field_name'] . '-' . $entity_id;
     $renderitems['slides'][$delta]['hash_id'] = 'slide-' . $delta . '-' . $slideset_id;
 
