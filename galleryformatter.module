@@ -181,15 +181,36 @@ function galleryformatter_field_formatter_view($entity_type, $entity, $field, $i
         $item['title'] = $item['alt'];
       }
       else {
-        $item['title'] = $entity->title;
+        if(!empty($entity->title)){
+          $item['title'] = $entity->title;
+        }
         // if we have more than one image, add the image count to the title so they are not all the same.
         $item['title'] = ($num_of_images > 1) ? $item['title'] . t(' image ') . ($delta + 1) : $item['title'];
       }
     }
 
-
-    // prepare the unique hash id per image
-    $slideset_id = $field['field_name'] . '-' . $entity->nid;
+    /**
+     * Here we prepare the unique hash id per image
+     * where we use a unique id of the entity, and since this
+     * is called once per image, we dont want to use
+     * entity_extract_ids()) for common use cases
+     */
+    switch($entity_type) {
+      case 'node':
+        $entity_id = $entity->nid;
+        break;
+      case 'user':
+        $entity_id = $entity->uid;
+        break;
+      case 'taxonomy':
+        $entity_id = $entity->tid;
+        break;
+      // for other entity types, we have to use it
+      default:
+        $ids = entity_extract_ids($entity_type, $entity);
+        $entity_id =  $ids[0];
+    }
+    $slideset_id = $field['field_name'] . '-' . $entity_id;
     $renderitems['slides'][$delta]['hash_id'] = 'slide-' . $delta . '-' . $slideset_id;
 
     $renderitems['slides'][$delta]['image'] = theme('image_formatter', array(
