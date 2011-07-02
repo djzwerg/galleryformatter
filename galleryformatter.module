@@ -10,7 +10,7 @@ function galleryformatter_field_formatter_info() {
   return array(
     'galleryformatter_default' => array(
       'label' => t('jQuery Gallery'),
-      'field types' => array('image'),
+      'field types' => array('image','media'),
       'settings' => array(
         'slide_style' => 'galleryformatter_slide',
         'thumb_style' => 'galleryformatter_thumb',
@@ -159,6 +159,33 @@ function galleryformatter_field_formatter_view($entity_type, $entity, $field, $i
   $settings['style'] = strtolower($settings['style']);
   $num_of_images = count($items);
 
+  // Media field support (only images)
+  if ($field['type'] == 'media') {
+    foreach ($items as $delta => $item) {
+      if ($item['file']->type == 'image') {
+        $items[$delta] = (array) $item; // Compatibility with 7.x-1.0-beta4 and previous media versions
+        $items[$delta]['uri'] = $item['file']->uri;
+        $items[$delta]['filename'] = $item['file']->filename;
+      }
+    }
+    dpm($items);
+    /**
+     * If it's not an image remove it from our items.
+     * We need to do it on another foreach in order not to mess up the $delta on the next run above.
+     */
+    $changed = FALSE;
+    foreach($items as $delta => $item) {
+      if ($item['file']->type !== 'image') {
+        unset($items[$delta]);
+        $changed = TRUE;
+      }
+    }
+    // if we removed from $items, reset the array keys
+    if ($changed) {
+      $items = array_values($items);
+    }
+  }
+
   // prepare the renderable array
   $renderitems = array();
   $renderitems['thumbs'] = array();
@@ -175,6 +202,7 @@ function galleryformatter_field_formatter_view($entity_type, $entity, $field, $i
     // $renderitems['slides'][$delta]['description'] = $item['description']; // so far no description in d7 image fields
     $item['title'] = (!empty($item['title'])) ? $item['title'] : ''; // prevents php notices
     $renderitems['slides'][$delta]['title'] = $item['title'];
+    $item['filename'] = $item['filename'] = '';
 
     // Check if alt attribute is already set, if not use the filename as alt attribute
     $renderitems['slides'][$delta]['alt'] = (isset($item['alt']) && !empty($item['alt'])) ? $item['alt'] : $item['filename'];
