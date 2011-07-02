@@ -168,7 +168,6 @@ function galleryformatter_field_formatter_view($entity_type, $entity, $field, $i
         $items[$delta]['filename'] = $item['file']->filename;
       }
     }
-    dpm($items);
     /**
      * If it's not an image remove it from our items.
      * We need to do it on another foreach in order not to mess up the $delta on the next run above.
