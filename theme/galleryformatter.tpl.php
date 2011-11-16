@@ -13,11 +13,10 @@
  * Available variables:
  *
  * $dimensions - Array containing both slides and thumbs dimensions
- * $gallery_slides - Array containing all slide images, a link to the original and its sanatized title & description ready to print
- * $thumbs - Array containing all thumbnail images ready to print
- * $link_to_full -  BOOLEAN wether or not we are linking slides to original images
+ * $slides - Array containing all slide images, and its sanatized title & alt ready to print
+ * $thumbs - Array containing all thumbnail images ready to print and their hash
+ * $settings - The settings for galleryformatter as configured for this field instance.
  */
-
 ?>
 <div class="galleryformatter galleryview galleryformatter-<?php print $settings['style'] ?>">
   <div class="gallery-slides" style="width: <?php print $dimensions['slides']['width']; ?>px; height: <?php print $dimensions['slides']['height']; ?>px;">
