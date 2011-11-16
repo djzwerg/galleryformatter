@@ -13,7 +13,7 @@
  * Available variables:
  *
  * $dimensions - Array containing both slides and thumbs dimensions
- * $slides - Array containing all slide images, and its sanatized title & alt ready to print
+ * $slides - Array containing all slide images, its sanatized title & alt ready to print, its hash id and the full image URL if you need it
  * $thumbs - Array containing all thumbnail images ready to print and their hash
  * $settings - The settings for galleryformatter as configured for this field instance.
  */
