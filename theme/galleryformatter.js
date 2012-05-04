@@ -145,7 +145,7 @@ Drupal.galleryformatter.prepare = function(el) {
       }
     });
 
-    $('img', $slideContainer).click(function(){
+    $('.shownext + img', $slideContainer).click(function(){
       $thumbs.trigger('showNext');
     });
 
