@@ -251,12 +251,14 @@ function galleryformatter_field_formatter_view($entity_type, $entity, $field, $i
       )
     );
     if ($settings['link_to_full'] == TRUE) {
+      $settings['linking_method'] = isset($settings['linking_method']) ? $settings['linking_method'] : '';
       /* @TODO
        * doesnt work yet
       $vars['gallery_style'] = 'galleryformatter-view-full '; // give the gallery a class for themers to play with
       * */
       $link_attributes = array(
         'title' => $item['title'],
+        'class' => '',
       );
 
       if ($settings['linking_method'] !== 'onclick_full') {
