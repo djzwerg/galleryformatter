@@ -270,7 +270,7 @@ function galleryformatter_field_formatter_view($entity_type, $entity, $field, $i
         case 'none':
           break;
         case 'colorbox':
-          $link_attributes['class'] .= ($settings['linking_method'] == 'onclick_full') ? ' colorbox' : 'colorbox';
+          $link_attributes['class'] .= ($settings['linking_method'] == 'onclick_full') ? 'colorbox' : ' colorbox';
           $link_attributes['rel'] = 'gallery-['. $slideset_id .']';
           break;
         case 'shadowbox':
