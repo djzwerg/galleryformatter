@@ -76,8 +76,8 @@ Drupal.galleryformatter.prepare = function(el) {
     var $locationHash = window.location.hash; // if we are being deeplinked to a specific slide, capture that
 
     function showFirstSlide(){
-       $slides.filter(':first').show(); // show the first one
-       $thumbsLi.filter('.slide-0:not("cloned")').addClass('active'); // activate the first thumbnail
+      // Activate the first slide
+      $('a', $thumbsLi.filter('.slide-0:not("cloned")')).trigger('click');
      }
 
     // if we have a hash in the url
