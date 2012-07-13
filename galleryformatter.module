@@ -169,15 +169,15 @@ function galleryformatter_theme() {
  * Implements hook_field_formatter_view().
  */
 function galleryformatter_field_formatter_view($entity_type, $entity, $field, $instance, $langcode, $items, $display) {
+  $element = array();
+
   // if there are no images, dont do anything else
   if(empty($items)){
-    return;
+    return $element;
   }
   $modulepath = drupal_get_path('module', 'galleryformatter');
-  $element = array();
   $settings = $display['settings'];
   $settings['style'] = strtolower($settings['style']);
-  $num_of_images = count($items);
 
   // Media field support (only images)
   if ($field['type'] == 'media') {
@@ -204,6 +204,30 @@ function galleryformatter_field_formatter_view($entity_type, $entity, $field, $i
       $items = array_values($items);
     }
   }
+
+  // Get the dimensions, and remove unfound files,
+  // to avoid errors when the image is no longer on the server but still in the image field.
+  $changed = FALSE;
+  foreach ($items as $delta => $item) {
+    $dimensions['slides'] = galleryformatter_getimage_dimensions($settings['slide_style'], $items[$delta]['uri']);
+    if (!$dimensions['slides']) {
+      unset($items[$delta]);
+      $changed = TRUE;
+    }
+  };
+  // if we removed from $items, reset the array keys
+  if ($changed) {
+    $items = array_values($items);
+  }
+
+  // if there are no images, dont do anything else
+  if(empty($items)) {
+    return $element;
+  }
+
+  $dimensions['slides'] = galleryformatter_getimage_dimensions($settings['slide_style'], $items[0]['uri']);
+  $dimensions['thumbs'] = galleryformatter_getimage_dimensions($settings['thumb_style'], $items[0]['uri']);
+  $num_of_images = count($items);
 
   // prepare the renderable array
   $renderitems = array();
@@ -306,12 +330,10 @@ function galleryformatter_field_formatter_view($entity_type, $entity, $field, $i
       $renderitems['thumbs'][$delta]['hash_id'] = 'slide-' . $delta . '-' . $slideset_id;
     }
   }
-  $dimensions['slides'] = galleryformatter_getimage_dimensions($settings['slide_style'], $items[0]['uri']);
 
   if($num_of_images > 1){
-   $dimensions['thumbs'] = galleryformatter_getimage_dimensions($settings['thumb_style'], $items[0]['uri']);
-   drupal_add_js($modulepath . '/theme/infiniteCarousel.js');
-   drupal_add_js($modulepath . '/theme/galleryformatter.js');
+    drupal_add_js($modulepath . '/theme/infiniteCarousel.js');
+    drupal_add_js($modulepath . '/theme/galleryformatter.js');
   }
   galleryformatter_add_css($settings['style']);
   drupal_add_css($modulepath . '/theme/galleryformatter.css');
@@ -393,11 +415,11 @@ function galleryformatter_galleryformatter_styles() {
  * width => value and height => value, not including px
  */
 function galleryformatter_getimage_dimensions($stylename, $image_path) {
-  // generate the image style image path
+  $ret = NULL;
 
+  // generate the image style image path
   $transformed_path =  image_style_path($stylename, $image_path);
   // grab the style itself
-
   $style = image_style_load($stylename);
 
   // if using the default style no need to get image info
