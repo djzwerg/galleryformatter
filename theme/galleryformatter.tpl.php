@@ -23,7 +23,6 @@
     <div class="gallery-frame">
       <ul>
       <?php foreach ($slides as $id => $data): ?>
-      <?php dpm($data); ?>
         <li class="gallery-slide" id="<?php print $data['hash_id']; ?>">
           <?php print $data['image']; ?>
           <?php if (!empty($data['title']) || !empty($data['alt'])): ?>
