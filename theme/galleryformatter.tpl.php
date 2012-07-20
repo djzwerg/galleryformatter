@@ -23,11 +23,13 @@
     <div class="gallery-frame">
       <ul>
       <?php foreach ($slides as $id => $data): ?>
+      <?php dpm($data); ?>
         <li class="gallery-slide" id="<?php print $data['hash_id']; ?>">
           <?php print $data['image']; ?>
-          <?php if (!empty($data['title'])): ?>
+          <?php if (!empty($data['title']) || !empty($data['alt'])): ?>
             <div class="panel-overlay">
               <div class="overlay-inner">
+                <?php if ($data['alt']): ?><h4><?php print $data['alt']; ?></h4><?php endif; ?>
                 <?php if ($data['title']): ?><h3><?php print $data['title']; ?></h3><?php endif; ?>
               </div>
             </div>
