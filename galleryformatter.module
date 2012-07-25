@@ -243,13 +243,28 @@ function galleryformatter_field_formatter_view($entity_type, $entity, $field, $i
      */
     // Grab and sanitize image information
     // $renderitems['slides'][$delta]['description'] = $item['description']; // so far no description in d7 image fields
-    $item['title'] = (!empty($item['title'])) ? $item['title'] : ''; // prevents php notices
+    if (!empty($item['title'])) {
+      // Sanitize the title
+      if(strpos($item['title'], '<') !== FALSE) {
+        $item['title'] = strip_tags($item['title']);
+      }
+    }
+    else {
+      $item['title'] = ''; // prevents php notices
+    }
     $renderitems['slides'][$delta]['title'] = $item['title'];
     $item['filename'] = $item['filename'] = '';
 
-    // Check if alt attribute is already set, if not use the filename as alt attribute
-    $renderitems['slides'][$delta]['alt'] = (isset($item['alt']) && !empty($item['alt'])) ? $item['alt'] : $item['filename'];
-    $item['alt'] = $renderitems['slides'][$delta]['alt'];
+    // Check if alt attribute is already set and sanitize it, if not use the filename as alt attribute
+    if (isset($item['alt']) && !empty($item['alt'])) {
+      if(strpos($item['alt'], '<') !== FALSE) {
+        $item['alt'] = strip_tags($item['alt']);
+      }
+    }
+    else {
+      $item['alt'] = $item['filename'];
+    }
+    $renderitems['slides'][$delta]['alt'] = $item['alt'];
 
     // If the title is empty use alt or the node title in that order.
     if (empty($item['title'])) {
@@ -258,7 +273,9 @@ function galleryformatter_field_formatter_view($entity_type, $entity, $field, $i
       }
       else {
         if(!empty($entity->title)){
-          $item['title'] = $entity->title;
+          if(strpos($entity->title, '<') !== FALSE) {
+            $item['title'] = strip_tags($entity->title);
+          }
         }
         // if we have more than one image, add the image count to the title so they are not all the same.
         $item['title'] = ($num_of_images > 1) ? $item['title'] . t(' image ') . ($delta + 1) : $item['title'];
