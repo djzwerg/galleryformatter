@@ -79,7 +79,7 @@ Drupal.galleryformatter.prepare = function(el) {
 
     function showFirstSlide(){
       // Activate the first slide
-      $('a', $thumbsLi.filter('.slide-0:not("cloned")')).trigger('click');
+      $('a', $thumbsLi.filter('.slide-0:not(".cloned")')).trigger('click');
      }
 
     // if we have a hash in the url
@@ -108,7 +108,7 @@ Drupal.galleryformatter.prepare = function(el) {
     // Shows the previous slide and scrolls to the previous page if necessary
     $thumbs.bind('showPrev', function (event) {
       var currentScroll = $wrapper.get(0).scrollLeft;
-      var $prevThumbLi = $thumbsLi.filter('.active').prevAll().not('.cloned, .empty, .active').filter(':first');
+      var $prevThumbLi = $thumbsLi.filter('.active').prev(':not(".cloned, .empty, .active")');
       // if no results we are on the first element
       if(!$prevThumbLi.size()) {
         // select the last one
@@ -128,7 +128,7 @@ Drupal.galleryformatter.prepare = function(el) {
     $thumbs.bind('showNext', function (event) {
       var currentScroll = $wrapper.get(0).scrollLeft;
       // this selector could be optimized perhaps, but
-      var $nextThumbLi = $thumbsLi.filter('.active').nextAll().not('.cloned, .empty, .active').filter(':first');
+      var $nextThumbLi = $thumbsLi.filter('.active').next(':not(".cloned, .empty, .active")');
       // if no results we are on the last element
       if(!$nextThumbLi.size()) {
         // select the first one
