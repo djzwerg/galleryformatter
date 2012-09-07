@@ -72,7 +72,9 @@ Drupal.galleryformatter.prepare = function(el) {
     /*
      *  Startup behaviour (when the page first loads)
      */
-    $slides.hide(); // hide all slides
+    if ($slides.length > 1) {
+      $slides.hide(); // hide all slides
+    }
     var $locationHash = window.location.hash; // if we are being deeplinked to a specific slide, capture that
 
     function showFirstSlide(){
@@ -149,15 +151,17 @@ Drupal.galleryformatter.prepare = function(el) {
       $thumbs.trigger('showNext');
     });
 
-     // Setup buttons for next/prev slide
-    $slideButtons = ('<a class="prev-slide slide-button" title="'+ Drupal.t('Previous image') +'">&lt;</a><a class="next-slide slide-button" title="'+ Drupal.t('Next image') +'">&gt;</a>');
-    $('.gallery-slides', $el).append($slideButtons);
-    // Trigger the appropiate events on click
-    $('a.prev-slide', $el).click(function(){
-      $thumbs.trigger('showPrev');
-    });
-    $('a.next-slide', $el).click(function(){
-      $thumbs.trigger('showNext');
-    });
+    if ($slides.length > 1) {
+      // Setup buttons for next/prev slide
+      $slideButtons = ('<a class="prev-slide slide-button" title="'+ Drupal.t('Previous image') +'">&lt;</a><a class="next-slide slide-button" title="'+ Drupal.t('Next image') +'">&gt;</a>');
+      $('.gallery-slides', $el).append($slideButtons);
+      // Trigger the appropiate events on click
+      $('a.prev-slide', $el).click(function(){
+        $thumbs.trigger('showPrev');
+      });
+      $('a.next-slide', $el).click(function(){
+        $thumbs.trigger('showNext');
+      });
+    }
   })(jQuery);
 }
