@@ -276,6 +276,9 @@ function galleryformatter_field_formatter_view($entity_type, $entity, $field, $i
           if(strpos($entity->title, '<') !== FALSE) {
             $item['title'] = strip_tags($entity->title);
           }
+          else {
+            $item['title'] = $entity->title;
+          }
         }
         // if we have more than one image, add the image count to the title so they are not all the same.
         $item['title'] = ($num_of_images > 1) ? $item['title'] . t(' image ') . ($delta + 1) : $item['title'];
