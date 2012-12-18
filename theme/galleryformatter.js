@@ -1,10 +1,12 @@
 
 Drupal.behaviors.galleryformatter = {
   attach: function (context) {
-    (jQuery)('.galleryformatter:not(.gallery-processed)', context).each(function(){
-      Drupal.galleryformatter.prepare(this);
-
-    }).addClass('gallery-processed');
+    // We must wait for everything to load in order to get images' dimensions.
+    (jQuery)(window).bind('load', function() {
+      (jQuery)('.galleryformatter:not(.gallery-processed)', context).each(function(){
+        Drupal.galleryformatter.prepare(this);
+      }).addClass('gallery-processed');
+    });
   }
 };
 
