@@ -12,6 +12,7 @@ function galleryformatter_field_formatter_info() {
       'label' => t('jQuery Gallery'),
       'field types' => array('image','media'),
       'settings' => array(
+        'slide_image_default' => 1,
         'slide_style' => 'galleryformatter_slide',
         'thumb_style' => 'galleryformatter_thumb',
         'style' => 'Greenarrows',
@@ -37,6 +38,14 @@ function galleryformatter_field_formatter_settings_form($field, $instance, $view
   foreach (image_styles() as $id => $style) {
     $options[$id] = $id;
   }
+
+  $form['slide_image_default'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('Not Show image default'),
+    '#default_value' => $settings['slide_image_default'],
+    '#description' => t('If you check this on, Not show image default.'),
+  );
+
   $form['slide_style'] = array(
     '#type' => 'select',
     '#title' => t('Select the slide style'),
@@ -139,6 +148,7 @@ function galleryformatter_field_formatter_settings_summary($field, $instance, $v
   $summary[] = t('Thumbnails style: @value', array('@value' => $settings['thumb_style']));
   $summary[] = t('Gallery style: @value', array('@value' => $settings['style']));
   $summary[] = $settings['link_to_full'] ? t('Linking to full image') : t('Not linking to full image');
+  $summary[] = $settings['slide_image_default'] ? t('Show image default') : t('Not show image default');
 
   if ($settings['link_to_full']) {
     $full_image_style = $settings['link_to_full_style'] ? $settings['link_to_full_style'] : t('None (original image)');
@@ -178,6 +188,12 @@ function galleryformatter_field_formatter_view($entity_type, $entity, $field, $i
   $modulepath = drupal_get_path('module', 'galleryformatter');
   $settings = $display['settings'];
   $settings['style'] = strtolower($settings['style']);
+
+  if($settings['slide_image_default'] == 1){
+    if (isset($items[0]['is_default']) == TRUE) {
+      return $element;
+    }
+  }
 
   // Media field support (only images)
   if ($field['type'] == 'media') {

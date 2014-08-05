@@ -1,6 +1,6 @@
 
-name = Gallery Formatter
-description = Provides a jquery gallery CCK formatter for imagefield
+name = Gallery Formatter (Modify By Bob)
+description = Provides a jquery gallery CCK formatter for imagefield 
 dependencies[] = image
 dependencies[] = file
 
