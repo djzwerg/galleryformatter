@@ -1,5 +1,5 @@
 (function ($) {
-  Drupal.behaviors.galleryformatter = {
+  Backdrop.behaviors.galleryformatter = {
     attach: function (context, settings) {
       var $images = $('.galleryformatter img', context);
       var total_images = $images.length;
@@ -10,7 +10,7 @@
           loaded_images++;
           if (loaded_images == total_images) {
             $('.galleryformatter:not(.gallery-processed)', context).each(function () {
-              Drupal.galleryformatter.prepare(this);
+              Backdrop.galleryformatter.prepare(this);
             }).addClass('gallery-processed');
           }
         }
@@ -19,11 +19,11 @@
     }
   };
 
-  Drupal.galleryformatter = Drupal.galleryformatter || {};
+  Backdrop.galleryformatter = Backdrop.galleryformatter || {};
 
   // setting up the main behaviour
-  Drupal.galleryformatter.prepare = function(el) {
-    // var $settings = Drupal.settings.galleryformatter;
+  Backdrop.galleryformatter.prepare = function(el) {
+    // var $settings = Backdrop.settings.galleryformatter;
     $el = $(el);
     var $slides = $('li.gallery-slide', $el);
     var $slideContainer = $('div.gallery-slides', $el);
@@ -163,7 +163,7 @@
 
     if ($slides.length > 1) {
       // Setup buttons for next/prev slide
-      $slideButtons = ('<a href="#" class="prev-slide slide-button" title="'+ Drupal.t('Previous image') +'">&lt;</a><a href="#" class="next-slide slide-button" title="'+ Drupal.t('Next image') +'">&gt;</a>');
+      $slideButtons = ('<a href="#" class="prev-slide slide-button" title="'+ Backdrop.t('Previous image') +'">&lt;</a><a href="#" class="next-slide slide-button" title="'+ Backdrop.t('Next image') +'">&gt;</a>');
       $('.gallery-slides', $el).append($slideButtons);
       // Trigger the appropiate events on click
       $('a.prev-slide', $el).click(function(e){

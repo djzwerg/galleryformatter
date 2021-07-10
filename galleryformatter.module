@@ -1,16 +1,16 @@
 <?php
-  include_once DRUPAL_ROOT .'/'. drupal_get_path('module', 'galleryformatter') .'/includes/galleryformatter_imagestyles.inc';
+include_once BACKDROP_ROOT . '/' . backdrop_get_path('module', 'galleryformatter') . '/includes/galleryformatter_imagestyles.inc';
 // module_load_include('inc', 'galleryformatter', 'galleryformatter_imagecache');
 
 
 /**
- * Implementation of hook_field_formatter_info().
+ * Implements hook_field_formatter_info().
  */
 function galleryformatter_field_formatter_info() {
   return array(
     'galleryformatter_default' => array(
       'label' => t('jQuery Gallery'),
-      'field types' => array('image','media'),
+      'field types' => array('image', 'media'),
       'settings' => array(
         'slide_style' => 'galleryformatter_slide',
         'thumb_style' => 'galleryformatter_thumb',
@@ -32,7 +32,7 @@ function galleryformatter_field_formatter_settings_form($field, $instance, $view
   $settings = $display['settings'];
 
   $form = array();
-  $options = array(t('None'),);
+  $options = array(t('None'));
   // get a list of all style names for our form options
   foreach (image_styles() as $id => $style) {
     $options[$id] = $id;
@@ -80,14 +80,14 @@ function galleryformatter_field_formatter_settings_form($field, $instance, $view
     '#description' => t('Select the imagecache style you would like to show when clicked on the thumbnail.<br />If you select none, the the link will point to the original image.'),
     '#states' => array(
       'visible' => array(
-        ':input[name="fields['. $field['field_name'] .'][settings_edit_form][settings][link_to_full]"]' => array('checked' => TRUE),
-        )
-      )
+        ':input[name="fields[' . $field['field_name'] . '][settings_edit_form][settings][link_to_full]"]' => array('checked' => TRUE),
+      ),
+    ),
   );
   $modal_options = array();
   // integration with other modules for jQuery modal windows
   if (module_exists('colorbox')) {
-   $modal_options['colorbox'] = 'colorbox';
+    $modal_options['colorbox'] = 'colorbox';
   }
   if (module_exists('shadowbox')) {
     $modal_options['shadowbox'] = 'shadowbox';
@@ -100,32 +100,32 @@ function galleryformatter_field_formatter_settings_form($field, $instance, $view
   }
   $modal_options['none'] = t('Do not use modal');
   $form['modal'] = array(
-   '#type' => 'select',
-   '#title' => t('Use jQuery modal for full image link'),
-   '#options' => $modal_options,
-   '#default_value' => $settings['modal'],
-   '#description' => t("Select which jQuery modal module you'd like to display the full link image in, if any."),
-   '#states' => array(
+    '#type' => 'select',
+    '#title' => t('Use jQuery modal for full image link'),
+    '#options' => $modal_options,
+    '#default_value' => $settings['modal'],
+    '#description' => t("Select which jQuery modal module you'd like to display the full link image in, if any."),
+    '#states' => array(
       'visible' => array(
-        ':input[name="fields['. $field['field_name'] .'][settings_edit_form][settings][link_to_full]"]' => array('checked' => TRUE),
-        )
-      )
+        ':input[name="fields[' . $field['field_name'] . '][settings_edit_form][settings][link_to_full]"]' => array('checked' => TRUE),
+      ),
+    ),
   );
 
   $form['linking_method'] = array(
     '#type' => 'select',
     '#title' => t('How to link to the full image'),
     '#options' => array(
-        'show_full_link' => t('Using a link'),
-        'onclick_full' => t('On slide click'),
-      ),
+      'show_full_link' => t('Using a link'),
+      'onclick_full' => t('On slide click'),
+    ),
     '#default_value' => $settings['linking_method'],
     '#description' => t('On slide click means that when you click on the slide it will open the full image.<br /> Using a link means a magnify glass in default style.'),
     '#states' => array(
       'visible' => array(
-        ':input[name="fields['. $field['field_name'] .'][settings_edit_form][settings][link_to_full]"]' => array('checked' => TRUE),
-      )
-    )
+        ':input[name="fields[' . $field['field_name'] . '][settings_edit_form][settings][link_to_full]"]' => array('checked' => TRUE),
+      ),
+    ),
   );
 
   return $form;
@@ -141,7 +141,7 @@ function galleryformatter_field_formatter_settings_summary($field, $instance, $v
   $summary[] = t('Slides style: @value', array('@value' => $settings['slide_style']));
   $summary[] = t('Thumbnails style: @value', array('@value' => $settings['thumb_style']));
   $summary[] = t('Gallery style: @value', array('@value' => $settings['style']));
-  $summary[] = $settings['link_to_full'] ? t('Linking to full image') : t('Not linking to full image');
+  $summary[] = $settings['link_to_full']?t('Linking to full image') : t('Not linking to full image');
 
   if ($settings['link_to_full']) {
     $full_image_style = $settings['link_to_full_style'] ? $settings['link_to_full_style'] : t('None (original image)');
@@ -149,22 +149,22 @@ function galleryformatter_field_formatter_settings_summary($field, $instance, $v
 
     $summary[] =  t('Modal used for full image: @value', array('@value' => $settings['modal']));
 
-    $linking_method = ($settings['linking_method'] == 'onclick_full') ? t('On slide click') : t('Using a link');
+    $linking_method = ($settings['linking_method'] == 'onclick_full')?t('On slide click') : t('Using a link');
     $summary[] =  t('Linking method: @value', array('@value' => $linking_method));
   }
 
-  return implode ('<br />', $summary);
+  return implode('<br />', $summary);
 }
 
 /**
- * Implementation of hook_theme().
+ * Implements hook_theme().
  */
 function galleryformatter_theme() {
   return array(
     'galleryformatter' => array(
       'variables' => array('slides' => NULL, 'thumbs' => NULL, 'settings' => NULL, 'dimensions' => NULL),
-      'template' => 'theme/galleryformatter'
-    )
+      'template' => 'theme/galleryformatter',
+    ),
   );
 }
 
@@ -175,10 +175,10 @@ function galleryformatter_field_formatter_view($entity_type, $entity, $field, $i
   $element = array();
 
   // if there are no images, dont do anything else
-  if(empty($items)){
+  if (empty($items)) {
     return $element;
   }
-  $modulepath = drupal_get_path('module', 'galleryformatter');
+  $modulepath = backdrop_get_path('module', 'galleryformatter');
   $settings = $display['settings'];
   $settings['style'] = strtolower($settings['style']);
 
@@ -196,7 +196,7 @@ function galleryformatter_field_formatter_view($entity_type, $entity, $field, $i
      * We need to do it on another foreach in order not to mess up the $delta on the next run above.
      */
     $changed = FALSE;
-    foreach($items as $delta => $item) {
+    foreach ($items as $delta => $item) {
       if ($item['file']->type !== 'image') {
         unset($items[$delta]);
         $changed = TRUE;
@@ -217,14 +217,14 @@ function galleryformatter_field_formatter_view($entity_type, $entity, $field, $i
       unset($items[$delta]);
       $changed = TRUE;
     }
-  };
+  }
   // if we removed from $items, reset the array keys
   if ($changed) {
     $items = array_values($items);
   }
 
   // if there are no images, dont do anything else
-  if(empty($items)) {
+  if (empty($items)) {
     return $element;
   }
 
@@ -240,7 +240,7 @@ function galleryformatter_field_formatter_view($entity_type, $entity, $field, $i
   $ids = entity_extract_ids($entity_type, $entity);
   $entity_id =  $ids[0];
 
-  foreach ($items as $delta => $item){
+  foreach ($items as $delta => $item) {
     /*
      *  prepare slides
      */
@@ -248,7 +248,7 @@ function galleryformatter_field_formatter_view($entity_type, $entity, $field, $i
     // $renderitems['slides'][$delta]['description'] = $item['description']; // so far no description in d7 image fields
     if (!empty($item['title'])) {
       // Sanitize the title
-      if(strpos($item['title'], '<') !== FALSE) {
+      if (strpos($item['title'], '<') !== FALSE) {
         $item['title'] = strip_tags($item['title']);
       }
     }
@@ -260,7 +260,7 @@ function galleryformatter_field_formatter_view($entity_type, $entity, $field, $i
 
     // Check if alt attribute is already set and sanitize it, if not use the filename as alt attribute
     if (isset($item['alt']) && !empty($item['alt'])) {
-      if(strpos($item['alt'], '<') !== FALSE) {
+      if (strpos($item['alt'], '<') !== FALSE) {
         $item['alt'] = strip_tags($item['alt']);
       }
     }
@@ -275,8 +275,8 @@ function galleryformatter_field_formatter_view($entity_type, $entity, $field, $i
         $item['title'] = $item['alt'];
       }
       else {
-        if(!empty($entity->title)){
-          if(strpos($entity->title, '<') !== FALSE) {
+        if (!empty($entity->title)) {
+          if (strpos($entity->title, '<') !== FALSE) {
             $item['title'] = strip_tags($entity->title);
           }
           else {
@@ -293,16 +293,16 @@ function galleryformatter_field_formatter_view($entity_type, $entity, $field, $i
     $renderitems['slides'][$delta]['hash_id'] = 'slide-' . $delta . '-' . $slideset_id;
 
     $renderitems['slides'][$delta]['image'] = theme('image_formatter', array(
-        'item' => $item,
-        'image_style' => $settings['slide_style'],
-      )
+      'item' => $item,
+      'image_style' => $settings['slide_style'],
+    )
     );
     if ($settings['link_to_full'] == TRUE) {
       $settings['linking_method'] = isset($settings['linking_method']) ? $settings['linking_method'] : '';
       /* @TODO
        * doesnt work yet
-      $vars['gallery_style'] = 'galleryformatter-view-full '; // give the gallery a class for themers to play with
-      * */
+       $vars['gallery_style'] = 'galleryformatter-view-full '; // give the gallery a class for themers to play with
+       * */
       $link_attributes = array(
         'title' => $item['title'],
         'class' => '',
@@ -313,33 +313,33 @@ function galleryformatter_field_formatter_view($entity_type, $entity, $field, $i
       }
 
       // integration with other modules for jQuery modal windows
-      switch($settings['modal']) {
+      switch ($settings['modal']) {
         case 'none':
           break;
         case 'colorbox':
           $link_attributes['class'] .= ($settings['linking_method'] == 'onclick_full') ? 'colorbox' : ' colorbox';
-          $link_attributes['rel'] = 'gallery-['. $slideset_id .']';
+          $link_attributes['rel'] = 'gallery-[' . $slideset_id . ']';
           break;
         case 'shadowbox':
-          $link_attributes['rel'] = 'shadowbox['.$slideset_id .']';
+          $link_attributes['rel'] = 'shadowbox[' . $slideset_id . ']';
           $element['#attached']['library'][] = array('shadowbox', 'shadowbox');
           break;
         case 'lightbox2':
-          $link_attributes['rel'] = 'lightbox['. $slideset_id .']';
+          $link_attributes['rel'] = 'lightbox[' . $slideset_id . ']';
           break;
         case 'fancybox':
           $link_attributes['class'] = 'fancybox';
-          $link_attributes['rel'] = 'fancybox['. $slideset_id .']';
+          $link_attributes['rel'] = 'fancybox[' . $slideset_id . ']';
           break;
       }
-      $link_url = $settings['link_to_full_style'] ? image_style_url($settings['link_to_full_style'], $item['uri']) : file_create_url($item['uri']);
+      $link_url = $settings['link_to_full_style']?image_style_url($settings['link_to_full_style'], $item['uri']) : file_create_url($item['uri']);
 
       // link the slide image and include the span for the icon
-      $link_content = ($settings['linking_method'] == 'show_full_link') ? '<span class="view-full" title="'. t('View the full image') .'">'. t('View the full image') .'</span>' : '';
+      $link_content = ($settings['linking_method'] == 'show_full_link') ? '<span class="view-full" title="' . t('View the full image') . '">' . t('View the full image') . '</span>' : '';
       $image_rendered = $renderitems['slides'][$delta]['image'];
       $link_content .= ($settings['linking_method'] == 'onclick_full') ? $image_rendered : '';
 
-      $renderitems['slides'][$delta]['image'] = l($link_content, $link_url, array('attributes' => $link_attributes, 'html' => TRUE,));
+      $renderitems['slides'][$delta]['image'] = l($link_content, $link_url, array('attributes' => $link_attributes, 'html' => TRUE));
       $renderitems['slides'][$delta]['image'] .= ($settings['linking_method'] == 'onclick_full') ? '' : $image_rendered;
 
       $renderitems['slides'][$delta]['full_image_url'] = $link_url;
@@ -348,25 +348,25 @@ function galleryformatter_field_formatter_view($entity_type, $entity, $field, $i
     /*
      *  prepare thumbs
      */
-    if($num_of_images > 1){
+    if ($num_of_images > 1) {
       $renderitems['thumbs'][$delta]['image'] = theme('image_formatter', array(
-          'item' => $item,
-          'image_style' => $settings['thumb_style'],
-        )
+        'item' => $item,
+        'image_style' => $settings['thumb_style'],
+      )
       );
       $renderitems['thumbs'][$delta]['hash_id'] = 'slide-' . $delta . '-' . $slideset_id;
     }
   }
 
-  if($num_of_images > 1){
-    drupal_add_js($modulepath . '/theme/infiniteCarousel.js');
-    drupal_add_js($modulepath . '/theme/galleryformatter.js');
+  if ($num_of_images > 1) {
+    backdrop_add_js($modulepath . '/theme/infiniteCarousel.js');
+    backdrop_add_js($modulepath . '/theme/galleryformatter.js');
   }
   galleryformatter_add_css($settings['style']);
-  drupal_add_css($modulepath . '/theme/galleryformatter.css');
+  backdrop_add_css($modulepath . '/theme/galleryformatter.css');
 
   // prepare the variables for our theme function
-  $element['#theme'] ='galleryformatter';
+  $element['#theme'] = 'galleryformatter';
   $element['#slides'] = $renderitems['slides'];
   $element['#thumbs'] = $renderitems['thumbs'];
   $element['#settings'] = $settings;
@@ -382,11 +382,11 @@ function galleryformatter_field_formatter_view($entity_type, $entity, $field, $i
  */
 function galleryformatter_add_css($style) {
   // Add galleryformatter CSS.
-  drupal_add_css(drupal_get_path('module', 'galleryformatter') . '/theme/galleryformatter.css');
+  backdrop_add_css(backdrop_get_path('module', 'galleryformatter') . '/theme/galleryformatter.css');
 
   if ($style != 'nostyle') {
     $style_css = _galleryformatter_get_style_css($style);
-    drupal_add_css($style_css);
+    backdrop_add_css($style_css);
   }
 }
 
@@ -411,7 +411,7 @@ function _galleryformatter_get_style_css($style = 'nostyle') {
 }
 
 /**
- * Implementation of hook_galleryformatter_styles().
+ * Implements hook_galleryformatter_styles().
  *
  * This hook allows other modules to create additional tab styles for
  * the galleryformatter module.
@@ -422,13 +422,13 @@ function _galleryformatter_get_style_css($style = 'nostyle') {
  *   file for a gallery formatter style. Each value should be the name of the style.
  */
 function galleryformatter_galleryformatter_styles() {
-  $gallerystyles_directory = drupal_get_path('module', 'galleryformatter') . '/gallerystyles';
+  $gallerystyles_directory = backdrop_get_path('module', 'galleryformatter') . '/gallerystyles';
   $files = file_scan_directory($gallerystyles_directory, '/\.css$/');
   $gallerystyles = array();
   foreach ($files as $file) {
     // Skip RTL files.
     if (!strpos($file->name, '-rtl')) {
-      $gallerystyles[$file->uri] = drupal_ucfirst($file->name);
+      $gallerystyles[$file->uri] = backdrop_ucfirst($file->name);
     }
   }
   return $gallerystyles;

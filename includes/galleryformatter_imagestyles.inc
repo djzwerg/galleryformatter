@@ -8,6 +8,10 @@
 /*
  * Implementation of hook_image_default_styles().
  */
+/**
+ * @todo Please document this function.
+ * @see http://drupal.org/node/1354
+ */
 function galleryformatter_image_default_styles() {
   $styles = array();
 
@@ -15,7 +19,10 @@ function galleryformatter_image_default_styles() {
     'effects' => array(
       array(
         'name' => 'image_scale_and_crop',
-        'data' => array('width' => 500, 'height' => 312),
+        'data' => array(
+          'width' => 500,
+          'height' => 312,
+        ),
         'weight' => '0',
       ),
     ),
@@ -24,7 +31,10 @@ function galleryformatter_image_default_styles() {
     'effects' => array(
       array(
         'name' => 'image_scale_and_crop',
-        'data' => array('width' => 121, 'height' => 75),
+        'data' => array(
+          'width' => 121,
+          'height' => 75,
+        ),
         'weight' => '0',
       ),
     ),
