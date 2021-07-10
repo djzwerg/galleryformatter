@@ -4,7 +4,7 @@
  * @file
  * Gallery formatter integration with Backdrop module.
  */
-include_once BACKDROP_ROOT . '/' . backdrop_get_path('module', 'galleryformatter') . '/includes/galleryformatter_imagestyles.inc';
+include_once BACKDROP_ROOT . '/' . backdrop_get_path('module', 'galleryformatter') . '/galleryformatter_imagestyles.inc';
 // module_load_include('inc', 'galleryformatter', 'galleryformatter_imagecache');
 
 
@@ -171,7 +171,7 @@ function galleryformatter_theme() {
   return array(
     'galleryformatter' => array(
       'variables' => array('slides' => NULL, 'thumbs' => NULL, 'settings' => NULL, 'dimensions' => NULL),
-      'template' => 'theme/galleryformatter',
+      'template' => 'templates/galleryformatter',
     ),
   );
 }
@@ -392,11 +392,11 @@ function galleryformatter_field_formatter_view($entity_type, $entity, $field, $i
   }
 
   if ($num_of_images > 1) {
-    backdrop_add_js($modulepath . '/theme/infiniteCarousel.js');
-    backdrop_add_js($modulepath . '/theme/galleryformatter.js');
+    backdrop_add_js($modulepath . '/js/infiniteCarousel.js');
+    backdrop_add_js($modulepath . '/js/galleryformatter.js');
   }
   galleryformatter_add_css($settings['style']);
-  backdrop_add_css($modulepath . '/theme/galleryformatter.css');
+  backdrop_add_css($modulepath . '/css/galleryformatter.css');
 
   // prepare the variables for our theme function
   $element['#theme'] = 'galleryformatter';
@@ -415,7 +415,7 @@ function galleryformatter_field_formatter_view($entity_type, $entity, $field, $i
  */
 function galleryformatter_add_css($style) {
   // Add galleryformatter CSS.
-  backdrop_add_css(backdrop_get_path('module', 'galleryformatter') . '/theme/galleryformatter.css');
+  backdrop_add_css(backdrop_get_path('module', 'galleryformatter') . '/css/galleryformatter.css');
 
   if ($style != 'nostyle') {
     $style_css = _galleryformatter_get_style_css($style);
@@ -455,7 +455,7 @@ function _galleryformatter_get_style_css($style = 'nostyle') {
  *   file for a gallery formatter style. Each value should be the name of the style.
  */
 function galleryformatter_galleryformatter_styles() {
-  $gallerystyles_directory = backdrop_get_path('module', 'galleryformatter') . '/gallerystyles';
+  $gallerystyles_directory = backdrop_get_path('module', 'galleryformatter') . '/templates';
   $files = file_scan_directory($gallerystyles_directory, '/\.css$/');
   $gallerystyles = array();
   foreach ($files as $file) {
