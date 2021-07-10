@@ -1,4 +1,7 @@
-
+/**
+ * @file
+ * Gallery formatter integration with Backdrop module.
+ */
 /**
  * Plugin written by the great jqueryfordesigners.com
  * http://jqueryfordesigners.com/jquery-infinite-carousel/
@@ -40,7 +43,7 @@
           $wrapper.scrollLeft(singleWidth * visible);
 
           // 4. paging function
-          function gotoPage(page) {
+          function gotopage(page) {
               var dir = page < currentPage ? -1 : 1,
                   n = Math.abs(currentPage - page),
                   left = singleWidth * dir * visible * n;

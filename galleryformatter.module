@@ -1,4 +1,9 @@
 <?php
+
+/**
+ * @file
+ * Gallery formatter integration with Backdrop module.
+ */
 include_once BACKDROP_ROOT . '/' . backdrop_get_path('module', 'galleryformatter') . '/includes/galleryformatter_imagestyles.inc';
 // module_load_include('inc', 'galleryformatter', 'galleryformatter_imagecache');
 
@@ -98,6 +103,9 @@ function galleryformatter_field_formatter_settings_form($field, $instance, $view
   if (module_exists('fancybox')) {
     $modal_options['fancybox'] = 'fancybox';
   }
+  if (module_exists('photoswipe')) {
+    $modal_options['photoswipe'] = 'photoswipe';
+  }
   $modal_options['none'] = t('Do not use modal');
   $form['modal'] = array(
     '#type' => 'select',
@@ -191,7 +199,7 @@ function galleryformatter_field_formatter_view($entity_type, $entity, $field, $i
         $items[$delta]['filename'] = $item['file']->filename;
       }
     }
-    /**
+    /*
      * If it's not an image remove it from our items.
      * We need to do it on another foreach in order not to mess up the $delta on the next run above.
      */
@@ -284,7 +292,7 @@ function galleryformatter_field_formatter_view($entity_type, $entity, $field, $i
           }
         }
         // if we have more than one image, add the image count to the title so they are not all the same.
-        $item['title'] = ($num_of_images > 1) ? $item['title'] . t(' image ') . ($delta + 1) : $item['title'];
+        $item['title'] = ($num_of_images > 1) ? $item['title'] . t('image') . ($delta + 1) : $item['title'];
       }
     }
 
@@ -330,6 +338,31 @@ function galleryformatter_field_formatter_view($entity_type, $entity, $field, $i
         case 'fancybox':
           $link_attributes['class'] = 'fancybox';
           $link_attributes['rel'] = 'fancybox[' . $slideset_id . ']';
+          break;
+        case 'photoswipe':
+          if (module_exists('photoswipe')) {
+            $config = config('photoswipe.settings');
+            $always_loaded = $config->get('photoswipe_always_load_non_admin');
+
+            if (!$always_loaded) {
+              // Module photoswipe did no hook_library_info, so we load the files
+              // individually. But only if it's not always loaded anyway.
+              $ps_path = backdrop_get_path('module', 'photoswipe');
+              $element['#attached']['css'][] = $ps_path . '/library/photoswipe.css';
+              $element['#attached']['css'][] = $ps_path . '/library/default-skin/default-skin.css';
+              $element['#attached']['js'][] = $ps_path . '/library/photoswipe.min.js';
+              $element['#attached']['js'][] = $ps_path . '/library/photoswipe-ui-default.min.js';
+              // This file needs to go to the footer.
+              $element['#attached']['js'][] = array(
+                'type' => 'file',
+                'data' => $ps_path . '/js/photoswipe.jquery.js',
+                'scope' => 'footer',
+              );
+
+            }
+          }
+          $link_attributes['class'] = 'photoswipe';
+		  $element['#attached']['library'][] = array('photoswipe', 'photoswipe');
           break;
       }
       $link_url = $settings['link_to_full_style']?image_style_url($settings['link_to_full_style'], $item['uri']) : file_create_url($item['uri']);

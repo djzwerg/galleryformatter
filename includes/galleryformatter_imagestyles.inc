@@ -5,12 +5,8 @@
  * Provides default Image styles presets that can be overridden by site administrators.
  */
 
-/*
- * Implementation of hook_image_default_styles().
- */
 /**
- * @todo Please document this function.
- * @see http://drupal.org/node/1354
+ * Implementation of "hook_image_default_styles()".
  */
 function galleryformatter_image_default_styles() {
   $styles = array();
@@ -41,4 +37,3 @@ function galleryformatter_image_default_styles() {
   );
   return $styles;
 }
-
